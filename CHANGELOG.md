@@ -32,7 +32,11 @@ All notable changes to nullpot are documented in this file.
 - Apply SO_ORIGINAL_DST syscall on Linux to recover original destination of redirected traffic
 - Platform-specific build tags: widenet_linux.go (Linux), widenet_other.go (non-Linux error)
 
-### Phase 4 — sensors/internal/traps/http_persona: YAML-driven HTTP/HTTPS trap
+### Phase 2 — aggregator/internal/correlate: Fix double-verification correlation
+
+- Fix processEvent: only record Widenet port sweeps as recon, only record trap hits as exploitation
+- Prevent single-packet scans from self-classifying as high-confidence attackers
+- ADR-010 double-verification logic unchanged (implementation bug fix)
 
 - OpenAPI/YAML-driven decoy HTTP trap serving persona routes (ADR-005)
 - Canary token injection, SHA-256 payload hashing, OCSF event emission (ADR-006)

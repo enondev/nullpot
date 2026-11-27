@@ -146,8 +146,12 @@ func processEvent(
 	}
 
 	// Double-verification correlation
-	corr.RecordSweep(ev.SrcEndpoint.IP, ev.Time)
-	corr.RecordHit(ev.SrcEndpoint.IP, ev.Time)
+	// Widenet port sweeps are recorded as recon; trap hits are recorded as exploitation.
+	if ev.Enrichment.Module == "widenet" {
+		corr.RecordSweep(ev.SrcEndpoint.IP, ev.Time)
+	} else if ev.Enrichment.Module == "http_persona" || ev.Enrichment.Module == "ssh" || ev.Enrichment.Module == "raw_tcp" {
+		corr.RecordHit(ev.SrcEndpoint.IP, ev.Time)
+	}
 	corrResult := corr.Correlate(ev.SrcEndpoint.IP, ev.Time)
 
 	// Risk scoring
