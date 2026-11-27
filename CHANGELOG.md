@@ -121,3 +121,10 @@ All notable changes to nullpot are documented in this file.
 - STIX 2.1 bundle with application/stix+json;version=2.1 content type
 - Workers AI scheduled summarizer (score >= 75 events only)
 - D1 schema: ip_reputation, asn_reputation, events, blocklist (ADR-015)
+
+### Phase 5 — edge-api/src/routes/: D1 fallback for KV cache misses
+
+- GET /v1/ip/:ip falls back to D1 ip_reputation table on KV miss
+- GET /v1/asn/:asn falls back to D1 asn_reputation table on KV miss
+- D1 results backfilled to KV for subsequent requests
+- Parameterized SQL queries to prevent injection
