@@ -92,7 +92,18 @@ func main() {
 	go func() {
 		defer procWg.Done()
 		for ev := range events {
-			processEvent(ctx, ev, corrEngine, allowlist, scorer, xarfReporter, xarfDispatcher, cfSync, eventStore)
+			pc := ProcessingContext{
+				Ctx:          ctx,
+				Event:        ev,
+				Corr:         corrEngine,
+				Allowlist:    allowlist,
+				Scorer:       scorer,
+				XARFReporter: xarfReporter,
+				XARF:         xarfDispatcher,
+				CFSync:       cfSync,
+				Store:        eventStore,
+			}
+			processEvent(pc)
 		}
 	}()
 
@@ -128,33 +139,40 @@ func getEnv(key, def string) string {
 	return def
 }
 
-func processEvent(
-	ctx context.Context,
-	ev specs.ThreatEvent,
-	corr *correlate.Engine,
-	allowlist *correlate.Allowlist,
-	scorer *scoring.Scorer,
-	xarfReporter abuse.XARFReporter,
-	xarf *abuse.Dispatcher,
-	cfSync *cloudflare.Sync,
-	store *ingest.EventStore,
-) {
+// ProcessingContext groups all dependencies needed to process a single event.
+type ProcessingContext struct {
+	Ctx          context.Context
+	Event        specs.ThreatEvent
+	Corr         *correlate.Engine
+	Allowlist    *correlate.Allowlist
+	Scorer       *scoring.Scorer
+	XARFReporter abuse.XARFReporter
+	XARF         *abuse.Dispatcher
+	CFSync       *cloudflare.Sync
+	Store        *ingest.EventStore
+}
+
+func processEvent(ctx ProcessingContext) {
+	ev := ctx.Event
+
 	// Check researcher allowlist — skip allowlisted IPs
-	if allowlist.IsAllowed(ev.SrcEndpoint.IP) {
+	if checkAllowlist(ev, ctx.Allowlist) {
 		log.Printf("skipping allowlisted IP: %s", ev.SrcEndpoint.IP)
 		return
 	}
 
-	// Double-verification correlation
-	// Widenet port sweeps are recorded as recon; trap hits are recorded as exploitation.
-	if ev.Enrichment.Module == "widenet" {
-		corr.RecordSweep(ev.SrcEndpoint.IP, ev.Time)
-	} else if ev.Enrichment.Module == "http_persona" || ev.Enrichment.Module == "ssh" || ev.Enrichment.Module == "raw_tcp" {
-		corr.RecordHit(ev.SrcEndpoint.IP, ev.Time)
-	}
-	corrResult := corr.Correlate(ev.SrcEndpoint.IP, ev.Time)
+	// Record event to store (bounded, FIFO eviction).
+	ctx.Store.Add(ev)
 
-	// Risk scoring
+	// Extract C2/IOCs from captured payload.
+	extractor := correlate.NewC2Extractor()
+	iocs := extractor.Extract(ev.Enrichment.PayloadPreview)
+
+	// Double-verification correlation.
+	// Widenet port sweeps are recorded as recon; trap hits are recorded as exploitation.
+	corrResult := correlateEvent(ev, ctx.Corr)
+
+	// Risk scoring.
 	ttlHours := int(corrResult.TTL / time.Hour)
 	inputs := scoring.RiskInputs{
 		IP: ev.SrcEndpoint.IP,
@@ -165,35 +183,80 @@ func processEvent(
 			RiskMultiplier:   corrResult.RiskMultiplier,
 			TTL:              ttlHours,
 		},
-		IsConfirmedC2:    corrResult.IsHighConfidence && len(ev.Enrichment.ExtractedIOCs) > 0,
+		IsConfirmedC2:    corrResult.IsHighConfidence && len(iocs) > 0,
 		IsResidentialVPS: false,
+		ExtractedIOCs:    iocStrings(iocs),
 	}
-	riskScore := scorer.Score(inputs)
+	riskScore := scoreEvent(inputs, ctx.Scorer)
 
 	log.Printf("event %s: IP=%s score=%.1f level=%s ttl=%dh",
 		ev.FindingInfo.UID, ev.SrcEndpoint.IP, riskScore.Score,
 		riskScore.RiskLevel, riskScore.TTLHours)
 
 	// XARF dispatch for high-confidence exploitation/malware drops
-	if abuse.ShouldDispatch(ev) {
-		report := abuse.BuildReport(ev, xarfReporter)
-		if err := xarf.Dispatch(report); err != nil {
-			log.Printf("XARF dispatch failed: %v", err)
-		}
+	if err := dispatchXARF(ev, ctx.XARFReporter, ctx.XARF); err != nil {
+		log.Printf("XARF dispatch failed: %v", err)
 	}
 
 	// Cloudflare sync (batched, respects free-tier caps)
-	if cfSync != nil && riskScore.RiskLevel == "critical" {
-		kvPairs := []cloudflare.KVPair{
-			{Key: "ip:" + ev.SrcEndpoint.IP, Value: fmt.Sprintf("score=%.1f level=%s", riskScore.Score, riskScore.RiskLevel)},
-		}
-		d1Rows := []cloudflare.D1Row{
-			{SQL: "INSERT INTO events (ip, score, level, ttl) VALUES (?, ?, ?, ?)",
-				Params: []interface{}{ev.SrcEndpoint.IP, riskScore.Score, riskScore.RiskLevel, riskScore.TTLHours}},
-		}
-		result := cfSync.Run(kvPairs, d1Rows)
-		if len(result.Errors) > 0 {
-			log.Printf("CF sync errors: %v", result.Errors)
-		}
+	if err := syncToCloudflare(ev, riskScore, ctx.CFSync); err != nil {
+		log.Printf("CF sync error: %v", err)
 	}
+}
+
+// checkAllowlist returns true if the IP should be skipped (allowlisted).
+func checkAllowlist(ev specs.ThreatEvent, allowlist *correlate.Allowlist) bool {
+	return allowlist.IsAllowed(ev.SrcEndpoint.IP)
+}
+
+// correlateEvent performs double-verification: recon + exploit from same IP/subnet.
+func correlateEvent(ev specs.ThreatEvent, corr *correlate.Engine) correlate.CorrelationResult {
+	if ev.Enrichment.Module == "widenet" {
+		corr.RecordSweep(ev.SrcEndpoint.IP, ev.Time)
+	} else if ev.Enrichment.Module == "http_persona" || ev.Enrichment.Module == "ssh" || ev.Enrichment.Module == "raw_tcp" {
+		corr.RecordHit(ev.SrcEndpoint.IP, ev.Time)
+	}
+	return corr.Correlate(ev.SrcEndpoint.IP, ev.Time)
+}
+
+// scoreEvent computes the risk score for the given inputs.
+func scoreEvent(inputs scoring.RiskInputs, scorer *scoring.Scorer) scoring.RiskScore {
+	return scorer.Score(inputs)
+}
+
+// iocStrings converts []correlate.ExtractedIOC to []string.
+func iocStrings(iocs []correlate.ExtractedIOC) []string {
+	out := make([]string, len(iocs))
+	for i, ioc := range iocs {
+		out[i] = ioc.Value
+	}
+	return out
+}
+
+// dispatchXARF sends a XARF report for events that warrant it.
+func dispatchXARF(ev specs.ThreatEvent, reporter abuse.XARFReporter, xarf *abuse.Dispatcher) error {
+	if !abuse.ShouldDispatch(ev) {
+		return nil
+	}
+	report := abuse.BuildReport(ev, reporter)
+	return xarf.Dispatch(report)
+}
+
+// syncToCloudflare pushes critical events to KV and D1.
+func syncToCloudflare(ev specs.ThreatEvent, riskScore scoring.RiskScore, cfSync *cloudflare.Sync) error {
+	if cfSync == nil || riskScore.RiskLevel != "critical" {
+		return nil
+	}
+	kvPairs := []cloudflare.KVPair{
+		{Key: "ip:" + ev.SrcEndpoint.IP, Value: fmt.Sprintf("score=%.1f level=%s", riskScore.Score, riskScore.RiskLevel)},
+	}
+	d1Rows := []cloudflare.D1Row{
+		{SQL: "INSERT INTO events (ip, score, level, ttl) VALUES (?, ?, ?, ?)",
+			Params: []interface{}{ev.SrcEndpoint.IP, riskScore.Score, riskScore.RiskLevel, riskScore.TTLHours}},
+	}
+	result := cfSync.Run(kvPairs, d1Rows)
+	if len(result.Errors) > 0 {
+		return result.Errors[0]
+	}
+	return nil
 }
