@@ -1,0 +1,19 @@
+User-agent: *
+Disallow: /admin
+Disallow: /billing
+Disallow: /api-keys
+Disallow: /team
+Disallow: /clusters
+Disallow: /.env
+Disallow: /.git
+Disallow: /phpmyadmin
+Disallow: /wp-admin
+Disallow: /server-status
+Disallow: /download
+Disallow: /console
+Disallow: /telemetry
+Allow: /
+
+# Trap paths below are intentionally disallowed to lure automated scanners
+# Accessing any of these will trigger a telemetry callback to the aggregator.
+Sitemap: https://nexuscompute.cloud/sitemap.xml

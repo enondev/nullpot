@@ -1,0 +1,22 @@
+name = "nullpot-edge-api"
+main = "src/routes/index.ts"
+compatibility_date = "2026-11-27"
+compatibility_flags = ["nodejs_compat"]
+
+[observability]
+enabled = true
+
+[kv_namespaces]
+binding = "KV"
+id = "" # set via wrangler secret or environment variable
+
+[d1_databases]
+binding = "D1"
+database_name = "nullpot-edge-db"
+database_id = "" # set via wrangler secret or environment variable
+
+[[ai]]
+binding = "AI"
+
+[vars]
+CF_WEB_ANALYTICS_TOKEN = ""

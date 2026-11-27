@@ -1,0 +1,231 @@
+openapi: 3.1.0
+info:
+  title: nullpot Sensor Ingest & Edge Lookup API
+  version: 1.0.0
+  description: |
+    Governs Sensor-to-Aggregator ingestion endpoints (gzip JSON), Customer Edge
+    API contracts, and authentic HTTP/AI/Cloud honeypot persona mocking.
+servers:
+  - url: https://sensor.{region}.nullpot.internal/v1
+    variables:
+      region:
+        enum: [eu-central, us-east, ap-southeast]
+  - url: https://api.nullpot.internal/v1
+jsonSchemaDialect: "https://json-schema.org/draft/2020-12"
+paths:
+  /ingest:
+    post:
+      summary: Sensor-to-Aggregator telemetry ingestion
+      operationId: ingestThreatEvent
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ThreatEvent'
+          application/gzip:
+            schema:
+              type: string
+              format: binary
+              description: gzip-compressed ThreatEvent JSON
+      responses:
+        '202':
+          description: Accepted for processing
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/IngestAccepted'
+        '400':
+          description: Invalid payload
+  /ip/{ip}:
+    get:
+      summary: Look up IP reputation
+      operationId: getIPReputation
+      parameters:
+        - in: path
+          name: ip
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: IP reputation record
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/IPReputation'
+  /asn/{asn}:
+    get:
+      summary: Look up ASN reputation
+      operationId: getASNReputation
+      parameters:
+        - in: path
+          name: asn
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ASN reputation record
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ASNReputation'
+  /edl/{feed}.txt:
+    get:
+      summary: Firewall External Dynamic List (plain text)
+      operationId: getEDL
+      parameters:
+        - in: path
+          name: feed
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Plain-text blocklist
+          content:
+            text/plain:
+              schema:
+                type: string
+  /stix/bundle.json:
+    get:
+      summary: STIX 2.1 cached bundle
+      operationId: getSTIXBundle
+      responses:
+        '200':
+          description: STIX 2.1 bundle
+          content:
+            application/stix+json;version=2.1:
+              schema:
+                type: object
+  /misp/manifest.json:
+    get:
+      summary: MISP Core Format manifest
+      operationId: getMISPManifest
+      responses:
+        '200':
+          description: MISP manifest
+          content:
+            application/json:
+              schema:
+                type: object
+components:
+  schemas:
+    ThreatEvent:
+      type: object
+      required:
+        - class_uid
+        - category_uid
+        - activity_id
+        - time
+        - metadata
+        - src_endpoint
+        - dst_endpoint
+        - finding_info
+        - enrichment
+      properties:
+        class_uid:
+          type: integer
+        category_uid:
+          type: integer
+        activity_id:
+          type: integer
+        time:
+          type: string
+          format: date-time
+        metadata:
+          $ref: '#/components/schemas/Metadata'
+        src_endpoint:
+          $ref: '#/components/schemas/Endpoint'
+        dst_endpoint:
+          $ref: '#/components/schemas/Endpoint'
+        finding_info:
+          $ref: '#/components/schemas/FindingInfo'
+        enrichment:
+          $ref: '#/components/schemas/Enrichment'
+    Metadata:
+      type: object
+      properties:
+        version:
+          type: string
+        product:
+          $ref: '#/components/schemas/Product'
+    Product:
+      type: object
+      properties:
+        name:
+          type: string
+        uid:
+          type: string
+        region:
+          type: string
+    Endpoint:
+      type: object
+      properties:
+        ip:
+          type: string
+        port:
+          type: integer
+    FindingInfo:
+      type: object
+      properties:
+        uid:
+          type: string
+        title:
+          type: string
+        types:
+          type: array
+          items:
+            type: string
+    Enrichment:
+      type: object
+      properties:
+        module:
+          type: string
+        persona_id:
+          type: string
+        fingerprint:
+          type: string
+        canary_id:
+          type: string
+        payload_preview:
+          type: string
+        payload_sha256:
+          type: string
+          pattern: '^[a-f0-9]{64}$'
+        extracted_iocs:
+          type: array
+          items:
+            type: string
+    IngestAccepted:
+      type: object
+      properties:
+        status:
+          type: string
+        event_uid:
+          type: string
+    IPReputation:
+      type: object
+      properties:
+        ip:
+          type: string
+        score:
+          type: number
+        ttl:
+          type: string
+        asn:
+          type: string
+        geo:
+          type: string
+    ASNReputation:
+      type: object
+      properties:
+        asn:
+          type: string
+        score:
+          type: number
+        org:
+          type: string
+        country:
+          type: string

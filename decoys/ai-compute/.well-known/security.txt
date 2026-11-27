@@ -1,0 +1,12 @@
+# Nexus Compute Security Policy
+# CNRY_SECURITY_TXT_01: Internal security contact
+
+Contact: mailto:security+cnry_security_txt_01@nexuscompute.internal
+Contact: tel:+1-555-0100
+Encryption: https://nexuscompute.cloud/.well-known/pgp-key.asc
+Acknowledgments: https://nexuscompute.cloud/hall-of-fame
+Policy: https://nexuscompute.cloud/security-policy
+Hiring: https://nexuscompute.cloud/careers?cnry=cnry_security_txt_hiring_01
+
+# Preferred languages: en
+# Canonical: https://nexuscompute.cloud/.well-known/security.txt

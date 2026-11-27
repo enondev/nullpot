@@ -1,0 +1,29 @@
+id: llm-ollama-v0.5
+name: Ollama LLM Inference
+banner: Ollama API Server
+canary_token_inject: true
+routes:
+  - path: /api/generate
+    method: POST
+    response:
+      status: 200
+      body: '{"model":"ollama","created_at":"2026-11-27T03:55:00Z","response":"","done":true}'
+      headers:
+        Content-Type: application/json
+    capture:
+      body: true
+      headers: true
+  - path: /api/chat
+    method: POST
+    response:
+      status: 200
+      body: '{"model":"ollama","created_at":"2026-11-27T03:55:00Z","message":{"role":"assistant","content":""},"done":true}'
+      headers:
+        Content-Type: application/json
+    capture:
+      body: true
+      headers: true
+ioc_capture:
+  - http://
+  - https://
+  - CVE-

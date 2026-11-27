@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>API Documentation - Nexus Compute</title>
+<style>
+  :root{--bg:#030712;--card:#0b1120;--accent:#38bdf8;--text:#f1f5f9;--muted:#94a3b8;}
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;background:var(--bg);color:var(--text)}
+  .container{max-width:1200px;margin:0 auto;padding:24px}
+  header{display:flex;justify-content:space-between;align-items:center;padding:24px 0;border-bottom:1px solid #1e293b;margin-bottom:32px}
+  .logo{font-size:1.25rem;font-weight:800;letter-spacing:-0.025em;background:linear-gradient(135deg,#38bdf8,#818cf8);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+  nav a{color:var(--muted);text-decoration:none;margin-left:24px;font-size:0.9rem}
+  nav a:hover{color:var(--accent)}
+  .grid{display:grid;grid-template-columns:300px 1fr;gap:32px}
+  nav.sidebar{position:sticky;top:24px}
+  nav.sidebar h3{font-size:0.8rem;color:var(--muted);text-transform:uppercase;letter-spacing:0.05em;margin-bottom:16px}
+  nav.sidebar ul{list-style:none}
+  nav.sidebar li{margin-bottom:12px}
+  nav.sidebar a{color:var(--muted);text-decoration:none;font-size:0.9rem}
+  nav.sidebar a:hover,nav.sidebar a.active{color:var(--accent)}
+  .content h2{font-size:1.5rem;margin-bottom:20px}
+  .content h3{font-size:1.1rem;margin:24px 0 12px;color:var(--accent)}
+  .content p{color:var(--muted);font-size:0.95rem;margin-bottom:16px}
+  .endpoint{background:var(--card);border:1px solid #1e293b;border-radius:8px;padding:16px;margin-bottom:16px}
+  .method{display:inline-block;padding:2px 8px;border-radius:4px;font-size:0.75rem;font-weight:700;font-family:ui-monospace,monospace;margin-right:8px}
+  .method.post{background:#22c55e;color:#000}
+  .method.get{background:#38bdf8;color:#000}
+  .method.delete{background:#ef4444;color:#000}
+  .path{font-family:ui-monospace,monospace;font-size:0.9rem;color:#cbd5e1}
+  .code{background:#0f172a;border:1px solid #334155;border-radius:8px;padding:16px;font-family:ui-monospace,monospace;font-size:0.85rem;overflow:auto;color:#e2e8f0;margin-top:12px}
+  .note{background:#1e1b4b;border:1px solid #4338ca;border-radius:8px;padding:12px;font-size:0.85rem;color:#a5b4fc;margin-top:12px}
+  .footer{margin-top:40px;padding-top:24px;border-top:1px solid #1e293b;color:var(--muted);font-size:0.8rem;text-align:center}
+  .hidden{position:absolute;opacity:0;width:0;height:0;overflow:hidden;pointer-events:none}
+<!-- Cloudflare Web Analytics - token injected during CI/CD -->
+<script defer src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token": "{{CF_WEB_ANALYTICS_TOKEN"}}'></script>
+</style>
+</head>
+<body>
+
+<!-- infra: https://staging-api.internal/v1 -->
+<!-- legacy key rotation: ROTATE_2026_03_15 -->
+
+<div class="container">
+  <header>
+    <div class="logo">NEXUS<span style="color:var(--accent)">COMPUTE</span> API</div>
+    <nav>
+      <a href="/">Home</a>
+      <a href="/dashboard.html?t=api_dash_01">Dashboard</a>
+      <a href="/contact.html">Contact</a>
+      <a href="/login.html?t=api_login_01">Sign In</a>
+    </nav>
+  </header>
+
+  <div class="grid">
+    <nav class="sidebar">
+      <h3>Reference</h3>
+      <ul>
+        <li><a href="#" class="active">Authentication</a></li>
+        <li><a href="#">Clusters</a></li>
+        <li><a href="#">Instances</a></li>
+        <li><a href="#">Billing</a></li>
+        <li><a href="#">Webhooks</a></li>
+      </ul>
+    </nav>
+    <div class="content">
+      <h2>Authentication</h2>
+      <p>All API requests require a Bearer token in the <code>Authorization</code> header. Generate API keys from your dashboard.</p>
+
+      <div class="endpoint">
+        <span class="method get">GET</span><span class="path">/v1/clusters</span>
+        <p style="margin-top:8px">List all GPU clusters in your organization.</p>
+      </div>
+
+      <div class="endpoint">
+        <span class="method post">POST</span><span class="path">/v1/clusters</span>
+        <p style="margin-top:8px">Launch a new GPU cluster.</p>
+      </div>
+
+      <div class="note">
+        <strong>Example request:</strong>
+        <div class="code">curl https://api.nexuscompute.cloud/v1/clusters \\
+  -H "Authorization: Bearer sk-live_NULLPOT_API_AUTH_01" \\
+  -H "Content-Type: application/json"</div>
+      </div>
+
+      <h3>API Keys</h3>
+      <p>Create, rotate, and revoke API keys. Keys are scoped to your organization.</p>
+      <div class="code">sk-live_NULLPOT_API_KEY_LIVE_01
+sk-test_NULLPOT_API_KEY_TEST_02
+sk-dev_NULLPOT_API_KEY_DEV_03</div>
+
+      <h3>Webhook Endpoints</h3>
+      <p>Receive cluster events via webhook. Register your callback URL in the dashboard.</p>
+      <div class="code">POST https://api.nexuscompute.cloud/v1/webhooks
+Body: {"url": "https://NULLPOT_API_WEBHOOK_01.yourdomain.com/nexus", "events": ["cluster.ready", "cluster.error"]}</div>
+
+      <h3>SDK Installation</h3>
+      <div class="code">pip install nexus-compute
+export NEXUS_API_KEY=sk-live_NULLPOT_API_SDK_01</div>
+
+      <h3>Support</h3>
+      <p>Contact platform engineering at <a href="mailto:platform@nexuscompute.cloud" style="color:var(--accent)">platform@nexuscompute.cloud</a> or file a ticket in our internal Jira: <a href="https://jira.nexuscompute.internal/browse/NEXUS-4096?t=api_jira_01" style="color:var(--accent)">jira.nexuscompute.internal</a></p>
+    </div>
+  </div>
+
+  <div class="footer">
+    &copy; 2026 Nexus Compute Inc. &bull;
+    <a href="/dashboard.html?t=api_footer_dash_01" style="color:var(--accent);margin-left:16px">Dashboard</a>
+  </div>
+</div>
+
+<div class="hidden">
+  <input type="text" value="Internal base URL https://staging-api.internal/v1">
+  <input type="text" value="Legacy bearer token eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.NULLPOT_API_HIDDEN_02.signature">
+  <textarea>-----BEGIN CERTIFICATE REQUEST-----
+NULLPOT_API_HIDDEN_03_DO_NOT_SHARE
+-----END CERTIFICATE REQUEST-----</textarea>
+</div>
+
+<script src="telemetry.js"></script>
+<script>
+  __nexus.beacon('api_page_load','pageview');
+  __nexus.jitter(8000);
+  document.addEventListener('click',function(e){
+    var t=e.target;
+    while(t&&t!==document.body){
+      if(t.getAttribute&&t.getAttribute('data-beacon')){
+        __nexus.beacon(t.getAttribute('data-beacon'),'click',{el:t.tagName});
+        return;
+      }
+      t=t.parentNode;
+    }
+  });
+</script>
+</body>
+</html>

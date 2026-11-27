@@ -1,0 +1,20 @@
+{
+  "name": "nullpot-edge-api",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Cloudflare Worker for nullpot Edge API - <10ms GET /v1/ip/:ip, GET /v1/asn/:asn, GET /v1/edl/:feed.txt, GET /v1/stix/bundle.json, GET /v1/misp/manifest.json",
+  "scripts": {
+    "dev": "wrangler dev",
+    "deploy": "wrangler deploy",
+    "typecheck": "tsc --noEmit",
+    "build": "echo 'Cloudflare Worker - no build step required (wrangler handles bundling)'"
+  },
+  "devDependencies": {
+    "@cloudflare/workers-types": "^4.20240919.0",
+    "typescript": "^5.5.0",
+    "wrangler": "^3.72.0"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}

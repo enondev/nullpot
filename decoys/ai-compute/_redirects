@@ -1,0 +1,10 @@
+# Netlify _redirects
+# Trap paths return 404 but are logged by the static host; tracking tokens
+# in page source lure scanners to attempt these paths.
+
+/admin        /404.html  404
+/.env         /404.html  404
+/phpmyadmin   /404.html  404
+/server-status /404.html  404
+/.git         /404.html  404
+/wp-admin     /404.html  404

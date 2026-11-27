@@ -1,0 +1,16 @@
+/**
+  X-Content-Type-Options: nosniff
+  X-Frame-Options: DENY
+  Referrer-Policy: no-referrer
+
+/admin
+  X-Robots-Tag: noindex
+
+/.env
+  X-Robots-Tag: noindex
+
+/phpmyadmin
+  X-Robots-Tag: noindex
+
+/server-status
+  X-Robots-Tag: noindex

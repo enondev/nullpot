@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Maintenance | Nexus Compute</title>
+<style>
+  :root{--bg:#030712;--card:#0b1120;--accent:#38bdf8;--text:#f1f5f9;--muted:#94a3b8;}
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;background:var(--bg);color:var(--text);height:100vh;display:flex;align-items:center;justify-content:center}
+  .card{background:var(--card);border:1px solid #1e293b;border-radius:12px;padding:48px;text-align:center;max-width:480px;width:90%}
+  .logo{font-size:1.5rem;font-weight:800;letter-spacing:-0.025em;background:linear-gradient(135deg,#38bdf8,#818cf8);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:32px;display:block}
+  h1{font-size:2rem;margin-bottom:12px}
+  p{color:var(--muted);margin-bottom:24px}
+  .code{background:#0f172a;border:1px solid #334155;border-radius:8px;padding:16px;font-family:ui-monospace,monospace;font-size:0.8rem;color:#e2e8f0;overflow:auto;margin-bottom:24px}
+  .btn{display:inline-block;padding:12px 28px;border-radius:8px;background:var(--accent);color:#000;text-decoration:none;font-weight:600}
+  .btn:hover{background:#7dd3fc}
+  .hidden{position:absolute;opacity:0;width:0;height:0;overflow:hidden;pointer-events:none}
+</style>
+<!-- Cloudflare Web Analytics - token injected during CI/CD -->
+<script defer src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token": "{{CF_WEB_ANALYTICS_TOKEN"}}'></script>
+</head>
+<body>
+
+<!-- infra: scheduled maintenance - GPU cluster upgrade -->
+<!-- reference: infra-maint-01 -->
+
+<div class="card">
+  <span class="logo">NEXUS<span style="color:var(--accent)">COMPUTE</span></span>
+  <h1>Scheduled Maintenance</h1>
+  <p>We're upgrading our GPU clusters. Service will be restored shortly.</p>
+  <div class="code">Maintenance window: 2026-11-27 02:00-06:00 UTC<br>Region: us-east-1<br>Components: h100-cluster-01, inference-prod<br>Request ID: maint_01</div>
+  <a href="/" class="btn">Return to homepage</a>
+</div>
+
+<div class="hidden">
+  <!-- Hidden links - crawlers follow these, users never see -->
+  <a href="/maintenance.html?t=maint_hidden_01">maint_retry</a>
+  <a href="/console.html?t=maint_hidden_02">console_bypass</a>
+  <a href="/api.html?t=maint_hidden_03">api_maintenance</a>
+  <a href="/dashboard.html?t=maint_hidden_04">dashboard_bypass</a>
+  <a href="/download.html?t=maint_hidden_05">patch_notes</a>
+</div>
+
+<script src="telemetry.js"></script>
+<script>
+  __nexus.beacon('maint_page_load','pageview',{status:'maintenance'});
+  __nexus.jitter(8000);
+</script>
+</body>
+</html>

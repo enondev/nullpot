@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Operations Console | Nexus Compute</title>
+<style>
+  :root{--bg:#030712;--card:#0b1120;--accent:#38bdf8;--text:#f1f5f9;--muted:#94a3b8;}
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;background:var(--bg);color:var(--text)}
+  .container{max-width:1200px;margin:0 auto;padding:24px}
+  header{display:flex;justify-content:space-between;align-items:center;padding:24px 0;border-bottom:1px solid #1e293b;margin-bottom:32px}
+  .logo{font-size:1.25rem;font-weight:800;letter-spacing:-0.025em;background:linear-gradient(135deg,#38bdf8,#818cf8);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+  nav a{color:var(--muted);text-decoration:none;margin-left:24px;font-size:0.9rem}
+  nav a:hover{color:var(--accent)}
+  .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:24px}
+  .card{background:var(--card);border:1px solid #1e293b;border-radius:12px;padding:24px}
+  .card h3{font-size:1.1rem;margin-bottom:12px;color:var(--accent)}
+  .card p{color:var(--muted);font-size:0.9rem;margin-bottom:16px}
+  .btn{display:inline-block;padding:10px 20px;border-radius:8px;border:1px solid #334155;color:var(--text);text-decoration:none;font-size:0.9rem}
+  .btn:hover{border-color:var(--accent);color:var(--accent)}
+  .footer{margin-top:40px;padding-top:24px;border-top:1px solid #1e293b;color:var(--muted);font-size:0.8rem;text-align:center}
+  .mono{font-family:ui-monospace,monospace;font-size:0.8rem;color:#cbd5e1}
+  .notice{background:#1e1b4b;border:1px solid #4338ca;border-radius:8px;padding:16px;color:#c7d2fe;font-size:0.85rem;margin-bottom:24px}
+  .code{background:#0f172a;border:1px solid #334155;border-radius:8px;padding:12px;font-family:ui-monospace,monospace;font-size:0.8rem;color:#e2e8f0;overflow:auto;margin-top:12px}
+  .jitter-target{display:inline-block}
+<!-- Cloudflare Web Analytics - token injected during CI/CD -->
+<script defer src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token": "{{CF_WEB_ANALYTICS_TOKEN"}}'></script>
+</style>
+</head>
+<body>
+
+<!-- ops-console: v2.4.1 -- session: a1b2c3d4-e5f6-7890-abcd-ef1234567890 -->
+<!-- sso-provider: okta -- callback: /auth/callback?state=xyz789 -->
+
+<header>
+  <div class="logo">NEXUS<span style="color:var(--accent)">COMPUTE</span> | Console</div>
+  <nav>
+    <a href="/">Home</a>
+    <a href="/contact.html">Contact</a>
+    <a href="/login.html">Sign Out</a>
+  </nav>
+</header>
+
+<div class="notice">
+  Session timeout in 23 minutes. <a href="#" style="color:var(--accent)">Extend session</a> &bull; <a href="#" style="color:var(--accent)">View audit trail</a>
+</div>
+
+<div class="grid">
+  <div class="card">
+    <h3>Cluster Provisioning</h3>
+    <p>Launch GPU clusters across availability zones.</p>
+    <a href="/console.html?section=clusters" class="btn">Provision &rarr;</a>
+  </div>
+  <div class="card">
+    <h3>API Key Rotation</h3>
+    <p>Rotate service account credentials on a 90-day schedule.</p>
+    <a href="/console.html?section=keys" class="btn">Rotate Keys &rarr;</a>
+  </div>
+  <div class="card">
+    <h3>Cost Allocation</h3>
+    <p>View per-team GPU spend and reserved instance utilization.</p>
+    <a href="/console.html?section=costs" class="btn">View Costs &rarr;</a>
+  </div>
+  <div class="card">
+    <h3>Audit Logs</h3>
+    <p>Streaming audit trail for compliance and SOC 2 reporting.</p>
+    <a href="/console.html?section=audit" class="btn">View Logs &rarr;</a>
+  </div>
+  <div class="card">
+    <h3>Secret Rotation</h3>
+    <p>Rotate database credentials and third-party API tokens.</p>
+    <a href="/console.html?section=secrets" class="btn">Rotate Secrets &rarr;</a>
+  </div>
+  <div class="card">
+    <h3>Telemetry Configuration</h3>
+    <p>Gradual rollout configuration for new instance types.</p>
+    <a href="/console.html?section=telemetry" class="btn">Configure Telemetry &rarr;</a>
+  </div>
+</div>
+
+<div style="margin-top:40px;padding:24px;background:#0f172a;border:1px solid #334155;border-radius:8px">
+  <h3 style="color:var(--accent);margin-bottom:12px">Quick Commands</h3>
+  <div class="mono" style="margin-bottom:8px">nexus console clusters list --region us-east-1 --format json</div>
+  <div class="mono" style="margin-bottom:8px">nexus console keys rotate --pattern "sk-prod_*" --dry-run</div>
+  <div class="mono" style="margin-bottom:8px">nexus console secrets sync --source vault --target k8s</div>
+  <div class="code" style="margin-top:12px"># Session context
+export NEXUS_CONSOLE_SESSION="a1b2c3d4-e5f6-7890-abcd-ef1234567890"
+export NEXUS_CONSOLE_REGION="us-east-1"
+export NEXUS_CONSOLE_METRICS_ENDPOINT="https://console-api.nexuscompute.internal/v1/events"</div>
+</div>
+
+<div class="footer">
+  &copy; 2026 Nexus Compute Inc. &bull; Console v2.4.1
+  <a href="/" style="color:var(--accent);margin-left:16px">Customer Portal</a>
+</div>
+
+<script src="telemetry.js"></script>
+<script>
+  var params = new URLSearchParams(window.location.search);
+  var section = params.get('section') || 'overview';
+  __nexus.beacon('console_'+section,'pageview',{section:section});
+
+  // Chaotic jitter - random micro-movements to disrupt automated clicking/scraping
+  __nexus.jitter(12000);
+
+  // Randomly disable buttons to frustrate bots
+  setInterval(function(){
+    document.querySelectorAll('.btn').forEach(function(b){
+      if(Math.random() < 0.25){
+        b.disabled = true;
+        b.style.opacity = '0.35';
+        setTimeout(function(){b.disabled=false;b.style.opacity='1';}, 1200 + Math.random()*1800);
+      }
+    });
+  }, 1800);
+
+  // Hidden DOM text (scraper trap - looks like session metadata)
+  var hd = document.createElement('div');
+  hd.style.position='absolute';
+  hd.style.left='-9999px';
+  hd.textContent='session_ctx=a1b2c3d4-e5f6-7890-abcd-ef1234567890; internal_endpoint=https://ops-internal.nexuscompute.cloud/v1/admin; telemetry_callback=https://telemetry.nexuscompute.cloud/events';
+  document.body.appendChild(hd);
+</script>
+</body>
+</html>

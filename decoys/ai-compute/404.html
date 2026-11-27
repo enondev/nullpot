@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>404 - Nexus Compute</title>
+<style>
+  :root{--bg:#030712;--card:#0b1120;--accent:#38bdf8;--text:#f1f5f9;--muted:#94a3b8;}
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;background:var(--bg);color:var(--text);height:100vh;display:flex;align-items:center;justify-content:center}
+  .card{background:var(--card);border:1px solid #1e293b;border-radius:12px;padding:48px;text-align:center;max-width:480px;width:90%}
+  .logo{font-size:1.5rem;font-weight:800;letter-spacing:-0.025em;background:linear-gradient(135deg,#38bdf8,#818cf8);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:32px;display:block}
+  h1{font-size:2rem;margin-bottom:12px}
+  p{color:var(--muted);margin-bottom:24px}
+  .btn{display:inline-block;padding:12px 28px;border-radius:8px;background:var(--accent);color:#000;text-decoration:none;font-weight:600}
+  .btn:hover{background:#7dd3fc}
+  .hidden{position:absolute;opacity:0;width:0;height:0;overflow:hidden;pointer-events:none}
+</style>
+<!-- Cloudflare Web Analytics - token injected during CI/CD -->
+<script defer src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token": "{{CF_WEB_ANALYTICS_TOKEN"}}'></script>
+</head>
+<body>
+
+<!-- infra: leaked internal path /internal/admin/console -->
+<!-- infra: staging endpoint https://staging.internal/health -->
+
+<div class="card">
+  <span class="logo">NEXUS<span style="color:var(--accent)">COMPUTE</span></span>
+  <h1>404 &mdash; Not Found</h1>
+  <p>The endpoint you requested doesn't exist. If you're looking for the API, try <a href="/api.html?t=404_api_01" style="color:var(--accent)">API Docs</a>, contact us at <a href="/contact.html" style="color:var(--accent)">Contact</a>, or return to the <a href="/?t=404_home_01" style="color:var(--accent)">homepage</a>.</p>
+  <a href="/" class="btn">Go Home</a>
+</div>
+
+<div class="hidden">
+  <input type="text" value="Internal monitoring http://prometheus.internal:9090">
+  <input type="text" value="Elasticsearch http://elasticsearch.internal:9200">
+</div>
+
+<script src="telemetry.js"></script>
+<script>
+  __nexus.beacon('404_page_load','pageview',{path:window.location.pathname});
+  __nexus.jitter(8000);
+</script>
+</body>
+</html>

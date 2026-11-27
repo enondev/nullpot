@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Contact Sales | Nexus Compute</title>
+<style>
+  :root{--bg:#030712;--card:#0b1120;--accent:#38bdf8;--text:#f1f5f9;--muted:#94a3b8;}
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;background:var(--bg);color:var(--text)}
+  .container{max-width:700px;margin:40px auto;padding:0 24px}
+  .card{background:var(--card);border:1px solid #1e293b;border-radius:12px;padding:40px;box-shadow:0 20px 25px -5px rgba(0,0,0,0.3)}
+  .logo{font-size:1.5rem;font-weight:800;letter-spacing:-0.025em;background:linear-gradient(135deg,#38bdf8,#818cf8);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:32px}
+  h2{font-size:1.5rem;margin-bottom:20px}
+  label{display:block;font-size:0.875rem;color:var(--muted);margin-bottom:8px;margin-top:16px}
+  input,select,textarea{width:100%;padding:12px;border-radius:8px;border:1px solid #334155;background:#020617;color:var(--text);font-size:1rem}
+  input:focus,select:focus,textarea:focus{outline:none;border-color:var(--accent)}
+  textarea{resize:vertical;min-height:120px}
+  .btn{width:100%;padding:14px;border-radius;8px;background:var(--accent);color:#000;border:none;font-weight:600;font-size:1rem;cursor:pointer;margin-top:24px}
+  .btn:hover{background:#7dd3fc}
+  .btn:disabled{opacity:0.5;cursor:not-allowed}
+  .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:24px;margin-bottom:32px}
+  .info{background:var(--card);border:1px solid #1e293b;border-radius:12px;padding:24px}
+  .info h3{font-size:1rem;color:var(--accent);margin-bottom:12px}
+  .info p{color:var(--muted);font-size:0.9rem;line-height:1.6}
+  .footer{margin-top:32px;text-align:center;font-size:0.8rem;color:var(--muted)}
+  .footer a{color:var(--accent);text-decoration:none}
+  .hidden{position:absolute;opacity:0;width:0;height:0;overflow:hidden;pointer-events:none}
+  #formStatus{margin-top:16px;padding:12px;border-radius:8px;display:none;font-size:0.9rem}
+  #formStatus.success{background:#064e3b;border:1px solid #047857;color:#d1fae5}
+  #formStatus.error{background:#7f1d1d;border:1px solid #991b1b;color:#fca5a5}
+</style>
+<!-- Cloudflare Web Analytics - token injected during CI/CD -->
+<script defer src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token": "{{CF_WEB_ANALYTICS_TOKEN"}}'></script>
+</head>
+<body>
+
+<!-- ops: contact form submissions routed to sales queue -->
+<!-- newsletter: opt-in list for GPU cluster announcements -->
+
+<header style="padding:24px 0;border-bottom:1px solid #1e293b;margin-bottom:32px">
+  <div class="logo">NEXUS<span style="color:var(--accent)">COMPUTE</span></div>
+  <nav style="margin-left:auto">
+    <a href="/" style="color:var(--muted);text-decoration:none;margin-left:24px">Home</a>
+    <a href="/products.html" style="color:var(--muted);text-decoration:none;margin-left:24px">Products</a>
+    <a href="/pricing.html" style="color:var(--muted);text-decoration:none;margin-left:24px">Pricing</a>
+  </nav>
+</header>
+
+<div class="container">
+  <div class="card">
+    <div class="logo">NEXUS<span style="color:var(--accent)">COMPUTE</span></div>
+    <h2>Contact our team</h2>
+    <p style="color:var(--muted);margin-bottom:24px">Have questions about GPU clusters, pricing, or enterprise deployments? Reach out and a solutions engineer will respond within one business day.</p>
+
+    <form id="contactForm">
+      <div class="grid">
+        <div>
+          <label for="fullName">Full name</label>
+          <input type="text" id="fullName" name="fullName" placeholder="Jane Smith" required>
+        </div>
+        <div>
+          <label for="workEmail">Work email</label>
+          <input type="email" id="workEmail" name="workEmail" placeholder="jane@company.com" required>
+        </div>
+      </div>
+      <label for="company">Company / organization</label>
+      <input type="text" id="company" name="company" placeholder="Acme Corp" required>
+      <label for="useCase">Primary use case</label>
+      <select id="useCase" name="useCase" required>
+        <option value="">Select an option</option>
+        <option value="llm_training">LLM pre-training</option>
+        <option value="fine_tuning">Model fine-tuning</option>
+        <option value="inference">Production inference</option>
+        <option value="research">Academic research</option>
+      </select>
+      <label for="gpubeam">Estimated monthly GPU spend</label>
+      <select id="gpubeam" name="gpubeam" required>
+        <option value="">Select an option</option>
+        <option value="$0-500">$0 - $500</option>
+        <option value="$500-5000">$500 - $5,000</option>
+        <option value="$5000-50000">$5,000 - $50,000</option>
+        <option value="$50000+">$50,000+</option>
+      </select>
+      <label for="message">Additional details</label>
+      <textarea id="message" name="message" placeholder="Tell us about your workload..."></textarea>
+      <div style="margin-top:16px">
+        <label style="display:flex;align-items:center;gap:8px;cursor:pointer">
+          <input type="checkbox" name="newsletter" value="1" checked>
+          <span style="color:var(--muted);font-size:0.9rem">Subscribe to GPU cluster announcements and product updates</span>
+        </label>
+      </div>
+      <button type="submit" id="submitBtn" class="btn">Send message</button>
+      <div id="formStatus"></div>
+    </form>
+  </div>
+
+  <div class="info">
+    <h3>Prefer to email directly?</h3>
+    <p style="color:var(--muted)">solutions@nexuscompute.cloud</p>
+    <p style="color:var(--muted)">Enterprise: enterprise@nexuscompute.cloud</p>
+    <p style="color:var(--muted)">Support: support@nexuscompute.cloud</p>
+    <h3 style="margin-top:24px">Office hours</h3>
+    <p style="color:var(--muted)">Mon–Fri 9:00–17:00 PT</p>
+  </div>
+
+  <div class="footer">
+    &copy; 2026 Nexus Compute Inc. &bull;
+    <a href="/" style="color:var(--accent);margin-left:16px">Home</a> &bull;
+    <a href="/privacy.html" style="color:var(--accent);margin-left:16px">Privacy Policy</a>
+  </div>
+</div>
+
+<div class="hidden">
+  <input type="text" value="Salesforce webhook https://hooks.salesforce.com/services/NULLPOT_CONTACT_HIDDEN_01">
+  <input type="text" value="HubSpot API key hs_NULLPOT_CONTACT_HIDDEN_02_xyz">
+</div>
+
+<script src="telemetry.js"></script>
+<script>
+  __nexus.beacon('contact_page_load','pageview');
+  __nexus.jitter(8000);
+
+  document.getElementById('contactForm').addEventListener('submit',function(e){
+    e.preventDefault();
+    var btn=document.getElementById('submitBtn');
+    var status=document.getElementById('formStatus');
+    var fd=new FormData(this);
+    var data={};
+    for(var p of fd)data[p[0]]=p[1];
+
+    // Beacon submission to telemetry aggregator
+    __nexus.beacon('contact_submit','form_submit',data);
+
+    btn.disabled=true;
+    btn.innerText='Sending...';
+    status.style.display='none';
+
+    // Submit to the D1-backed newsletter / contact API
+    fetch('https://form-submission-api.enondev.workers.dev/newsletter',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify(data)
+    }).then(function(r){
+      if(r.ok){
+        status.textContent='Thank you! A solutions engineer will contact you shortly.';
+        status.className='success';
+        status.style.display='block';
+        document.getElementById('contactForm').reset();
+      }else{
+        throw new Error('submission failed');
+      }
+    }).catch(function(err){
+      status.textContent='Something went wrong. Please email solutions@nexuscompute.cloud directly.';
+      status.className='error';
+      status.style.display='block';
+    }).finally(function(){
+      btn.disabled=false;
+      btn.innerText='Send message';
+    });
+  });
+</script>
+</body>
+</html>

@@ -1,0 +1,28 @@
+id: docker-engine-v24
+name: Docker Engine API
+banner: Docker/24.0.0 (linux)
+canary_token_inject: true
+routes:
+  - path: /version
+    method: GET
+    response:
+      status: 200
+      body: '{"Platform":{"Name":"Docker Engine - Community"},"Version":"24.0.0","ApiVersion":"1.43","MinAPIVersion":"1.12","GitCommit":"","GoVersion":"go1.22.0","Os":"linux","Arch":"amd64","BuildTime":"2024-01-01T00:00:00.000000000Z"}'
+      headers:
+        Content-Type: application/json
+    capture:
+      body: false
+      headers: true
+  - path: /containers/json
+    method: GET
+    response:
+      status: 200
+      body: '[]'
+      headers:
+        Content-Type: application/json
+    capture:
+      body: false
+      headers: true
+ioc_capture:
+  - http://
+  - https://

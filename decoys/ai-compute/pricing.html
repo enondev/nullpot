@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pricing - Nexus Compute</title>
+<style>
+  :root{--bg:#030712;--card:#0b1120;--accent:#38bdf8;--text:#f1f5f9;--muted:#94a3b8;}
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;background:var(--bg);color:var(--text)}
+  .container{max-width:900px;margin:0 auto;padding:24px}
+  header{display:flex;justify-content:space-between;align-items:center;padding:24px 0;border-bottom:1px solid #1e293b;margin-bottom:32px}
+  .logo{font-size:1.25rem;font-weight:800;letter-spacing:-0.025em;background:linear-gradient(135deg,#38bdf8,#818cf8);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+  nav a{color:var(--muted);text-decoration:none;margin-left:24px;font-size:0.9rem}
+  nav a:hover{color:var(--accent)}
+  .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:24px}
+  .card{background:var(--card);border:1px solid #1e293b;border-radius:12px;padding:32px;text-align:center}
+  .card.featured{border-color:var(--accent)}
+  .plan{font-size:0.85rem;color:var(--muted);text-transform:uppercase;letter-spacing:0.05em;margin-bottom:12px}
+  .price{font-size:2.5rem;font-weight:700;margin-bottom:8px}
+  .price span{font-size:1rem;color:var(--mixed,var(--muted))}
+  .card ul{list-style:none;color:var(--muted);font-size:0.9rem;margin-bottom:24px;text-align:left}
+  .card ul li{margin-bottom:10px}
+  .card ul li::before{content:"&#10003; ";color:#22c55e;margin-right:6px}
+  .btn{display:block;width:100%;padding:14px;border-radius:8px;background:var(--accent);color:#000;text-decoration:none;font-weight:600;font-size:1rem;margin-bottom:16px}
+  .btn:hover{background:#7dd3fc}
+  .btn-outline{border:1px solid #334155;color:var(--text);background:transparent}
+  .btn-outline:hover{border-color:var(--accent);color:var(--accent)}
+  .footer{margin-top:40px;padding-top:24px;border-top:1px solid #1e293b;color:var(--muted);font-size:0.8rem;text-align:center}
+  .hidden{position:absolute;opacity:0;width:0;height:0;overflow:hidden;pointer-events:none}
+<!-- Cloudflare Web Analytics - token injected during CI/CD -->
+<script defer src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token": "{{CF_WEB_ANALYTICS_TOKEN"}}'></script>
+</style>
+</head>
+<body>
+
+<!-- infra: Internal discount code: PRICING_DISCOUNT_01_ENTERPRISE50 -->
+<!-- infra: Stripe webhook secret: whsec_NULLPOT_PRICING_01 -->
+
+<div class="container">
+  <header>
+    <div class="logo">NEXUS<span style="color:var(--accent)">COMPUTE</span></div>
+    <nav>
+      <a href="/">Home</a>
+      <a href="/products.html">Products</a>
+      <a href="/api.html">API Docs</a>
+      <a href="/contact.html">Contact</a>
+      <a href="/login.html">Sign In</a>
+    </nav>
+  </header>
+
+  <div class="grid">
+    <div class="card">
+      <div class="plan">Developer</div>
+      <div class="price">$0<span>/mo</span></div>
+      <ul>
+        <li>5 GPU hours/month</li>
+        <li>L40S instances</li>
+        <li>Community support</li>
+        <li>US-East-1 region</li>
+      </ul>
+      <a href="/signup.html?plan=dev&t=pricing_dev_01" class="btn">Get started</a>
+      <a href="#" class="btn btn-outline">Contact sales</a>
+    </div>
+    <div class="card featured">
+      <div class="plan">Team <span style="font-size:0.8rem;color:var(--accent)">Most popular</span></div>
+      <div class="price">$499<span>/mo</span></div>
+      <ul>
+        <li>200 GPU hours/month</li>
+        <li>H100 &amp; A100 instances</li>
+        <li>Priority support</li>
+        <li>Multi-region</li>
+        <li>SSO &amp; SCIM</li>
+      </ul>
+      <a href="/signup.html?plan=team&t=pricing_team_01" class="btn">Start trial</a>
+      <a href="#" class="btn btn-outline">Contact sales</a>
+    </div>
+    <div class="card">
+      <div class="plan">Enterprise</div>
+      <div class="price">Contact<span>/mo</span></div>
+      <ul>
+        <li>Unlimited GPU hours</li>
+        <li>All instance types</li>
+        <li>24/7 dedicated support</li>
+        <li>Private VPC peering</li>
+        <li>Custom SLAs</li>
+      </ul>
+      <a href="/enterprise.html?t=pricing_ent_01" class="btn btn-outline">Contact sales</a>
+    </div>
+  </div>
+
+  <div style="margin-top:40px;padding:24px;background:var(--card);border:1px solid #1e293b;border-radius:12px">
+    <h3 style="margin-bottom:12px">Volume discounts &amp; committed use</h3>
+    <p style="color:var(--muted);margin-bottom:16px">Commit to $10k+/month and receive custom pricing. Contact our enterprise team at <a href="mailto:enterprise@nexuscompute.cloud" style="color:var(--accent)">enterprise@nexuscompute.cloud</a>.</p>
+    <div class="code" style="background:#0f172a;border:1px solid #334155;border-radius:8px;padding:12px;font-family:ui-monospace,monospace;font-size:0.8rem;color:#e2e8f0;margin-top:12px">
+commitment_id: cmte_NULLPOT_PRICING_COMMIT_01
+tier: enterprise
+discount_pct: 25
+valid_until: 2027-01-31
+    </div>
+  </div>
+
+  <div class="footer">
+    &copy; 2026 Nexus Compute Inc. &bull;
+    <a href="/api.html?t=pricing_footer_api_01" style="color:var(--accent);margin-left:16px">API Docs</a>
+  </div>
+</div>
+
+<div class="hidden">
+  <input type="text" value="Stripe webhook secret whsec_NULLPOT_PRICING_HIDDEN_01">
+  <input type="text" value="Billing DB postgresql://NULLPOT_PRICING_BILLING:BillingP@ss!@billing-db.internal:5432/billing">
+</div>
+
+<script src="telemetry.js"></script>
+<script>
+  __nexus.beacon('pricing_page_load','pageview');
+  __nexus.jitter(8000);
+  document.addEventListener('click',function(e){
+    var t=e.target;
+    while(t&&t!==document.body){
+      if(t.getAttribute&&t.getAttribute('data-beacon')){
+        __nexus.beacon(t.getAttribute('data-beacon'),'click',{el:t.tagName});
+        return;
+      }
+      t=t.parentNode;
+    }
+  });
+</script>
+</body>
+</html>

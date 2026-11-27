@@ -1,0 +1,31 @@
+# Netlify configuration for Nexus Compute decoy site
+[build]
+  publish = "."
+  command = "echo 'static site, no build step'"
+
+[[redirects]]
+  source = "/admin"
+  dest = "/404.html"
+  status = 404
+
+[[redirects]]
+  source = "/.env"
+  dest = "/404.html"
+  status = 404
+
+[[redirects]]
+  source = "/phpmyadmin"
+  dest = "/404.html"
+  status = 404
+
+[[redirects]]
+  source = "/server-status"
+  dest = "/404.html"
+  status = 404
+
+[[headers]]
+  source = "/**"
+  [headers.values]
+    X-Content-Type-Options = "nosniff"
+    X-Frame-Options = "DENY"
+    Referrer-Policy = "no-referrer"

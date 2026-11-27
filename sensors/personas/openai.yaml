@@ -1,0 +1,29 @@
+id: llm-openai-v1.0
+name: OpenAI Chat Completions
+banner: OpenAI API
+canary_token_inject: true
+routes:
+  - path: /v1/chat/completions
+    method: POST
+    response:
+      status: 200
+      body: '{"id":"chatcmpl_","object":"chat.completion","created":0,"model":"gpt-","choices":[{"index":0,"message":{"role":"assistant","content":""},"finish_reason":"stop"}]}'
+      headers:
+        Content-Type: application/json
+    capture:
+      body: true
+      headers: true
+  - path: /v1/completions
+    method: POST
+    response:
+      status: 200
+      body: '{"id":"cmpl_","object":"text_completion","created":0,"model":"gpt-","choices":[{"text":"","finish_reason":"stop"}]}'
+      headers:
+        Content-Type: application/json
+    capture:
+      body: true
+      headers: true
+ioc_capture:
+  - http://
+  - https://
+  - CVE-

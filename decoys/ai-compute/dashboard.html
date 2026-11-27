@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dashboard - Nexus Compute</title>
+<style>
+  :root{--bg:#030712;--card:#0b1120;--accent:#38bdf8;--text:#f1f5f9;--muted:#94a3b8;}
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;background:var(--bg);color:var(--text)}
+  .container{max-width:1200px;margin:0 auto;padding:24px}
+  header{display:flex;justify-content:space-between;align-items:center;padding:24px 0;border-bottom:1px solid #1e293b;margin-bottom:32px}
+  .logo{font-size:1.25rem;font-weight:800;letter-spacing:-0.025em;background:linear-gradient(135deg,#38bdf8,#818cf8);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+  .user{display:flex;align-items:center;gap:12px;font-size:0.9rem;color:var(--muted)}
+  .user img{width:32px;height:32px;border-radius:50%;background:#334155}
+  .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:24px;margin-bottom:32px}
+  .stat{background:var(--card);border:1px solid #1e293b;border-radius:12px;padding:24px}
+  .stat .label{font-size:0.8rem;color:var(--muted);text-transform:uppercase;letter-spacing:0.05em}
+  .stat .value{font-size:2rem;font-weight:700;margin-top:8px}
+  .stat .delta{font-size:0.85rem;color:#22c55e;margin-top:4px}
+  .cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:24px}
+  .card{background:var(--card);border:1px solid #1e293b;border-radius:12px;padding:24px}
+  .card h3{font-size:1rem;margin-bottom:16px;color:var(--accent)}
+  .card p{font-size:0.9rem;color:var(--muted);margin-bottom:16px}
+  .btn{display:inline-block;padding:10px 20px;border-radius:8px;border:1px solid #334155;color:var(--text);text-decoration:none;font-size:0.9rem}
+  .btn:hover{border-color:var(--accent);color:var(--accent)}
+  .btn-danger{border-color:#ef4444;color:#ef4444}
+  .btn-danger:hover{background:#ef4444;color:#000}
+  .code{background:#0f172a;border:1px solid #334155;border-radius:8px;padding:12px;font-family:ui-monospace,monospace;font-size:0.8rem;color:#e2e8f0;overflow:auto}
+  .footer{margin-top:40px;padding-top:24px;border-top:1px solid #1e293b;color:var(--muted);font-size:0.8rem;text-align:center}
+  .hidden{position:absolute;opacity:0;width:0;height:0;overflow:hidden;pointer-events:none}
+<!-- Cloudflare Web Analytics - token injected during CI/CD -->
+<script defer src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token": "{{CF_WEB_ANALYTICS_TOKEN"}}'></script>
+</style>
+</head>
+<body>
+
+<!-- infra: kubectl get pods -n nexus-prod -l app=api-gateway -->
+<!-- monitoring: grafana.internal:3000/d/grafana_01 -->
+
+<div class="container">
+  <header>
+    <div class="logo">NEXUS<span style="color:var(--accent)">COMPUTE</span></div>
+    <div class="user">
+      <img src="/static/avatar.png" alt="">
+      <div>
+        <div style="font-size:0.9rem;color:var(--text)">jane.smith@company.com</div>
+        <div style="font-size:0.8rem;color:var(--accent)">Enterprise &bull; org_dash_01</div>
+      </div>
+    </div>
+  </header>
+
+  <div class="grid">
+    <div class="stat">
+      <div class="label">Active clusters</div>
+      <div class="value">3</div>
+      <div class="delta">&uarr; 12% vs last week</div>
+    </div>
+    <div class="stat">
+      <div class="label">GPU hours this month</div>
+      <div class="value">1,240</div>
+      <div class="delta">&uarr; 8% vs last week</div>
+    </div>
+    <div class="stat">
+      <div class="label">Estimated spend</div>
+      <div class="value">$4,820.00</div>
+      <div class="delta">&uarr; 5% vs last week</div>
+    </div>
+  </div>
+
+  <div class="cards">
+    <div class="card">
+      <h3>Clusters</h3>
+      <p>llm-training-01 (8x H100), inference-prod (4x A100), dev-sandbox (1x L40S)</p>
+      <a href="/clusters.html?t=dash_clusters_01" class="btn">Manage clusters &rarr;</a>
+    </div>
+    <div class="card">
+      <h3>API Keys</h3>
+      <p>Production and test keys for programmatic access to inference endpoints.</p>
+      <div class="code">sk-live_NULLPOT_DASH_API_KEY_01<br>sk-test_NULLPOT_DASH_API_KEY_02</div>
+      <a href="/api-keys.html?t=dash_apikeys_01" class="btn">View API keys &rarr;</a>
+    </div>
+    <div class="card">
+      <h3>Billing</h3>
+      <p>Current payment method: Visa ****4242 (expires 12/27)</p>
+      <div class="code">Stripe: sk_live_NULLPOT_DASH_STRIPE_01<br>Invoice: INV_NULLPOT_DASH_INV_01</div>
+      <a href="/billing.html?t=dash_billing_01" class="btn">View billing &rarr;</a>
+    </div>
+    <div class="card">
+      <h3>Team &amp; IAM</h3>
+      <p>4 members. Owner: jane.smith@company.com</p>
+      <div class="code">AWS IAM role: arn:aws:iam::123456789012:role/dash_iam_01<br>GCP SA: dash-sa@nexus-compute.iam.gserviceaccount.com</div>
+      <a href="/team.html?t=dash_team_01" class="btn">Manage team &rarr;</a>
+    </div>
+  </div>
+
+    <div class="footer">
+      &copy; 2026 Nexus Compute Inc. &bull;
+      <a href="/api.html?t=dash_api_01" style="color:var(--accent);margin-left:16px">API Docs</a> &bull;
+      <a href="/support.html?t=dash_support_01" style="color:var(--accent);margin-left:16px">Support</a> &bull;
+      <a href="/contact.html" style="color:var(--accent);margin-left:16px">Contact</a> &bull;
+      <a href="/logout?t=dash_logout_01" style="color:var(--accent);margin-left:16px">Sign out</a>
+    </div>
+</div>
+
+<div class="hidden">
+  <input type="text" value="Datadog API dd-api-key_NULLPOT_DASH_HIDDEN_01">
+  <input type="text" value="Slack webhook https://hooks.slack.com/services/T/NULLPOT_DASH_HIDDEN_02/B/xxxx">
+  <textarea>-----BEGIN PRIVATE KEY-----
+NULLPOT_DASH_HIDDEN_03_DO_NOT_EXPORT
+-----END PRIVATE KEY-----</textarea>
+</div>
+
+<script src="telemetry.js"></script>
+<script>
+  __nexus.beacon('dash_page_load','pageview');
+  __nexus.jitter(8000);
+  document.addEventListener('click',function(e){
+    var t=e.target;
+    while(t&&t!==document.body){
+      if(t.getAttribute&&t.getAttribute('data-beacon')){
+        __nexus.beacon(t.getAttribute('data-beacon'),'click',{el:t.tagName});
+        return;
+      }
+      t=t.parentNode;
+    }
+  });
+</script>
+</body>
+</html>

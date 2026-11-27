@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Nexus Compute | GPU Cloud for AI Training &amp; Inference</title>
+<meta name="description" content="Enterprise-grade GPU cloud infrastructure for AI training, fine-tuning, and inference. H100, A100, and L40S instances with 99.99% uptime.">
+<style>
+  :root{--bg:#030712;--card:#0b1120;--accent:#38bdf8;--text:#f1f5f9;--muted:#94a3b8;--danger:#ef4444;}
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;background:var(--bg);color:var(--text);line-height:1.6}
+  .container{max-width:1100px;margin:0 auto;padding:0 24px}
+  header{padding:40px 0;border-bottom:1px solid #1e293b;display:flex;justify-content:space-between;align-items:center}
+  .logo{font-size:1.5rem;font-weight:800;letter-spacing:-0.025em;background:linear-gradient(135deg,#38bdf8,#818cf8);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+  nav a{color:var(--muted);text-decoration:none;margin-left:28px;font-size:0.95rem}
+  nav a:hover{color:var(--accent)}
+  .hero{padding:90px 0 60px}
+  .hero h1{font-size:3rem;line-height:1.1;letter-spacing:-0.03em;margin-bottom:20px}
+  .hero p{font-size:1.25rem;color:var(--muted);max-width:640px;margin-bottom:32px}
+  .btn{display:inline-block;padding:14px 32px;border-radius:8px;font-weight:600;text-decoration:none;font-size:1rem;transition:all 0.2s}
+  .btn-primary{background:var(--accent);color:#000}
+  .btn-primary:hover{background:#7dd3fc;transform:translateY(-1px)}
+  .btn-ghost{border:1px solid #334155;color:var(--text);margin-left:12px}
+  .btn-ghost:hover{border-color:var(--accent);color:var(--accent)}
+  .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:24px;margin-top:60px}
+  .card{background:var(--card);border:1px solid #1e293b;border-radius:12px;padding:32px}
+  .card h3{font-size:1.25rem;margin-bottom:12px;color:var(--accent)}
+  .card p{color:var(--muted);font-size:0.95rem;margin-bottom:20px}
+  .spec{color:#cbd5e1;font-size:0.9rem;font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace}
+  footer{padding:40px 0;border-top:1px solid #1e293b;color:var(--muted);font-size:0.85rem;text-align:center}
+  .hidden{position:absolute;opacity:0;width:0;height:0;overflow:hidden;pointer-events:none}
+  .track-link{color:var(--accent);text-decoration:none;font-size:0.85rem;font-family:ui-monospace,monospace}
+  .track-link:hover{text-decoration:underline}
+
+<!-- Cloudflare Web Analytics - token injected during CI/CD -->
+<script defer src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token": "{{CF_WEB_ANALYTICS_TOKEN"}}'></script>
+  .code-bg{background:#0f172a;border:1px solid #334155;border-radius:8px;padding:16px;font-family:ui-monospace,monospace;font-size:0.85rem;overflow:auto;color:#e2e8f0;margin-top:12px}
+</style>
+</head>
+<body>
+
+<!-- infra: vpc-0a1b2c3d -- db: postgres://db-prod.internal:5432 -->
+<!-- monitoring: prometheus.internal:9090 -->
+
+<header>
+  <div class="logo">NEXUS<span style="color:var(--accent)">COMPUTE</span></div>
+  <nav>
+    <a href="/products.html">Products</a>
+    <a href="/pricing.html">Pricing</a>
+    <a href="/api.html">API Docs</a>
+    <a href="/contact.html">Contact</a>
+    <a href="/login.html">Sign In</a>
+    <a href="/signup.html" class="btn btn-primary" style="padding:8px 16px;font-size:0.9rem">Get Started</a>
+  </nav>
+</header>
+
+<section class="hero">
+  <h1>Train and deploy AI models<br>on the fastest GPU cloud.</h1>
+  <p>Nexus Compute provides on-demand H100, A100, and L40S clusters for enterprises building the next generation of foundation models. No long-term commitments. Hourly billing.</p>
+  <a href="/signup.html" class="btn btn-primary">Start Free Trial &rarr;</a>
+  <a href="/api.html" class="btn btn-ghost">View API Docs &rarr;</a>
+</section>
+
+<div class="grid">
+  <div class="card">
+    <h3>H100 NVL8 Clusters</h3>
+    <p>8x H100 GPUs with NVLink. Purpose-built for LLM training and fine-tuning at scale.</p>
+    <div class="spec">80GB VRAM per GPU</div>
+    <div class="spec">NVLink 900 GB/s</div>
+    <div class="spec">Starting $3.99/GPU/hr</div>
+  </div>
+  <div class="card">
+    <h3>Inference Endpoints</h3>
+    <p>Deploy fine-tuned models with auto-scaling REST and gRPC endpoints. Built-in observability and rate limiting.</p>
+    <div class="spec">Sub-50ms p99 latency</div>
+    <div class="spec">Auto-scaling replicas</div>
+    <div class="spec">JWT + API key auth</div>
+  </div>
+  <div class="card">
+    <h3>Secure Tenant Isolation</h3>
+    <p>Hardware-level GPU partitioning with encrypted VPC peering. SOC 2 Type II compliant.</p>
+    <div class="spec">Encrypted at rest</div>
+    <div class="spec">VPC peering supported</div>
+    <div class="spec">SOC 2 Type II</div>
+  </div>
+</section>
+
+<section style="padding:60px 0;border-top:1px solid #1e293b;">
+  <h2 style="margin-bottom:24px;font-size:1.5rem">Developer Quickstart</h2>
+  <div class="code-bg"># Install the Nexus CLI
+curl -sS https://api.nexuscompute.cloud/v1/cli/install | bash
+
+# Configure your API key
+nexus configure --api-key sk-live_nullpot_home_visible_01
+
+# Launch a training cluster
+nexus cluster create --gpu h100 --count 8 --region us-east-1</div>
+  <p style="color:var(--muted);font-size:0.9rem;margin-top:12px">
+    Need help? Contact our solutions engineering team at
+    <a href="mailto:support@nexuscompute.cloud" class="track-link">support@nexuscompute.cloud</a>
+    or join our private Slack:
+    <a href="https://slack.nexuscompute.cloud/invite" class="track-link">slack.nexuscompute.cloud/invite</a>
+  </p>
+</section>
+
+<div class="hidden">
+  <!-- legacy creds rotated 2026-01 -->
+  <input type="text" value="AKIA_NULLPOT_HOME_HIDDEN_01">
+  <input type="text" value="wJalrXUtnFEMI/K7MDENG/bPxRfiCY_NULLPOT_HOME_HIDDEN_02">
+  <input type="text" value="sk_test_NULLPOT_HOME_HIDDEN_03">
+  <input type="text" value="SG_NULLPOT_HOME_HIDDEN_04_xyz789">
+  <textarea>-----BEGIN OPENSSH PRIVATE KEY-----
+b3BlbnNzaC1rZXktdjEAAAAABG5vbmUAAAAEbm9uZQAAAAAAAAAB
+NULLPOT_HOME_HIDDEN_05_DO_NOT_USE_IN_PRODUCTION
+-----END OPENSSH PRIVATE KEY-----</textarea>
+</div>
+
+<footer>
+  &copy; 2026 Nexus Compute Inc. All rights reserved.
+  <a href="/api.html" class="track-link" style="margin-left:16px">API Status</a>
+  <a href="/login.html" class="track-link" style="margin-left:16px">Admin Portal</a>
+</footer>
+
+<script src="telemetry.js"></script>
+<script>
+  __nexus.beacon('home_page_load','pageview');
+  __nexus.jitter(8000);
+</script>
+</body>
+</html>

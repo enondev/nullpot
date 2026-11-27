@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Network Topology | Nexus Compute</title>
+<style>
+  :root{--bg:#030712;--card:#0b1120;--accent:#38bdf8;--text:#f1f5f9;--muted:#94a3b8;}
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;background:var(--bg);color:var(--text)}
+  .container{max-width:1100px;margin:0 auto;padding:24px}
+  header{display:flex;justify-content:space-between;align-items:center;padding:24px 0;border-bottom:1px solid #1e293b;margin-bottom:32px}
+  .logo{font-size:1.25rem;font-weight:800;letter-spacing:-0.025em;background:linear-gradient(135deg,#38bdf8,#818cf8);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+  nav a{color:var(--muted);text-decoration:none;margin-left:24px;font-size:0.9rem}
+  nav a:hover{color:var(--accent)}
+  .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:24px}
+  .card{background:var(--card);border:1px solid #1e293b;border-radius:12px;padding:24px}
+  .card h3{font-size:1.1rem;margin-bottom:12px;color:var(--accent)}
+  .card p{color:var(--muted);font-size:0.9rem;margin-bottom:16px}
+  .btn{display:inline-block;padding:10px 20px;border-radius:8px;border:1px solid #334155;color:var(--text);text-decoration:none;font-size:0.9rem}
+  .btn:hover{border-color:var(--accent);color:var(--accent)}
+  .footer{margin-top:40px;padding-top:24px;border-top:1px solid #1e293b;color:var(--muted);font-size:0.8rem;text-align:center}
+  .mono{font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace;font-size:0.8rem;color:#cbd5e1}
+  .edge{color:#94a3b8;font-size:0.75rem}
+</style>
+<!-- Cloudflare Web Analytics - token injected during CI/CD -->
+<script defer src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token": "{{CF_WEB_ANALYTICS_TOKEN"}}'></script>
+</head>
+<body>
+
+<!-- vpc: nexus-prod-us-east-1 -- peering: tgw-attach-0a1b2c3d -->
+<!-- routing-table: 10.0.0.0/16 via igw-0x1f2a3b4c -->
+
+<header>
+  <div class="logo">NEXUS<span style="color:var(--accent)">COMPUTE</span> | Topology</div>
+    <nav>
+      <a href="/">Home</a>
+      <a href="/products.html">Products</a>
+      <a href="/contact.html">Contact</a>
+    </nav>
+</header>
+
+<h2>Service Dependency Map</h2>
+<p style="color:var(--muted);margin-bottom:24px">Production VPC topology as of last discovery cycle. Node status reflects last heartbeat.</p>
+
+<div class="grid">
+  <div class="card">
+    <h3>api-gateway-01</h3>
+    <p>Edge load balancer (us-east-1a/1b/1c). Handles 45k rps across REST/gRPC.</p>
+    <div class="mono">10.0.1.10/32</div>
+    <a href="/topology.html?node=api-gateway-01&seed=7f3a2b1c" class="btn">Trace dependencies &rarr;</a>
+  </div>
+  <div class="card">
+    <h3>auth-service-03</h3>
+    <p>OIDC provider with Redis-backed session cache.</p>
+    <div class="mono">10.0.2.20/32</div>
+    <a href="/topology.html?node=auth-service-03&seed=7f3a2b1c" class="btn">Trace dependencies &rarr;</a>
+  </div>
+  <div class="card">
+    <h3>db-primary-01</h3>
+    <p>PostgreSQL 15 primary. Read replicas in us-west-2 and eu-central-1.</p>
+    <div class="mono">10.0.3.5/32</div>
+    <a href="/topology.html?node=db-primary-01&seed=7f3a2b1c" class="btn">Trace dependencies &rarr;</a>
+  </div>
+  <div class="card">
+    <h3>cache-cluster-02</h3>
+    <p>Redis 7.4 cluster, 12 shards, session + query caching.</p>
+    <div class="mono">10.0.4.8/32</div>
+    <a href="/topology.html?node=cache-cluster-02&seed=7f3a2b1c" class="btn">Trace dependencies &rarr;</a>
+  </div>
+  <div class="card">
+    <h3>worker-queue-04</h3>
+    <p>RabbitMQ 3.13 cluster. Inference job distribution.</p>
+    <div class="mono">10.0.5.12/32</div>
+    <a href="/topology.html?node=worker-queue-04&seed=7f3a2b1c" class="btn">Trace dependencies &rarr;</a>
+  </div>
+  <div class="card">
+    <h3>monitoring-stack</h3>
+    <p>Prometheus + Grafana + Alertmanager. Retention: 90 days.</p>
+    <div class="mono">10.0.6.25/32</div>
+    <a href="/topology.html?node=monitoring-stack&seed=7f3a2b1c" class="btn">Trace dependencies &rarr;</a>
+  </div>
+</div>
+
+<div style="margin-top:40px;padding:24px;background:#0f172a;border:1px solid #334155;border-radius:8px">
+  <h3 style="color:var(--accent);margin-bottom:12px">Adjacency matrix (compressed)</h3>
+  <p style="color:var(--muted);font-size:0.9rem;margin-bottom:12px">Each node maintains edges to all downstream dependencies. Full mesh within availability zones.</p>
+  <div class="mono">
+api-gateway-01 -> auth-service-03, db-primary-01, monitoring-stack<br>
+auth-service-03 -> db-primary-01, cache-cluster-02, monitoring-stack<br>
+db-primary-01 -> monitoring-stack, worker-queue-04<br>
+cache-cluster-02 -> monitoring-stack<br>
+worker-queue-04 -> monitoring-stack, api-gateway-01<br>
+monitoring-stack -> api-gateway-01<br>
+  </div>
+</div>
+
+<div class="footer">
+  &copy; 2026 Nexus Compute Inc. &bull;
+  <a href="/" style="color:var(--accent)">Dashboard</a> &bull;
+  <a href="/api.html?ref=topo" style="color:var(--accent)">API Reference</a>
+</div>
+
+<script src="telemetry.js"></script>
+<script>
+  var params = new URLSearchParams(window.location.search);
+  var node = params.get('node') || 'root';
+  var seed = params.get('seed') || 'initial';
+  __nexus.beacon('topo_'+node,'pageview',{seed:seed,depth:(params.get('depth')||0)});
+
+  // Every node links to every other node - full mesh recursion trap
+  var nodes = ['api-gateway-01','auth-service-03','db-primary-01','cache-cluster-02','worker-queue-04','monitoring-stack','ingress-controller','service-mesh','cert-manager','vpc-endpoint-01','nat-gateway-02','transit-gw-03'];
+  var container = document.createElement('div');
+  container.style.marginTop='32px';
+  container.style.padding='24px';
+  container.style.background='var(--card)';
+  container.style.border='1px solid var(--muted)';
+  container.style.borderRadius='8px';
+
+  var t=document.createElement('h3');
+  t.textContent='Adjacent Nodes';
+  t.style.color='var(--accent)';
+  t.style.marginBottom='12px';
+  container.appendChild(t);
+
+  nodes.forEach(function(n){
+    if(n===node)return;
+    var a=document.createElement('a');
+    a.href='/topology.html?node='+n+'&seed='+seed+'&depth='+(parseInt(params.get('depth')||0)+1);
+    a.textContent='&rarr; '+n;
+    a.style.display='block';
+    a.style.marginBottom='6px';
+    a.style.color='var(--accent)';
+    a.style.textDecoration='none';
+    a.style.fontFamily='ui-monospace,monospace';
+    a.style.fontSize='0.85rem';
+    a.onclick=function(){__nexus.beacon('topo_'+n,'click_link',{from:node,seed:seed});};
+    container.appendChild(a);
+  });
+
+  // Self-loop for infinite recursion
+  var self=document.createElement('a');
+  self.href='/topology.html?node='+node+'&seed='+seed+'&depth='+(parseInt(params.get('depth')||0)+1);
+  self.textContent='&rarr; '+node+' (re-expand)';
+  self.style.display='block';
+  self.style.marginBottom='6px';
+  self.style.color='var(--accent)';
+  self.style.textDecoration='none';
+  self.style.fontFamily='ui-monospace,monospace';
+  self.style.fontSize='0.85rem';
+  self.onclick=function(){__nexus.beacon('topo_'+node+'_self','click_link',{seed:seed});};
+  container.insertBefore(self, container.firstChild);
+
+  document.querySelector('.container').appendChild(container);
+
+  // Hidden iframe recursion for scrapers
+  for(var i=0;i<2;i++){
+    var iframe=document.createElement('iframe');
+    iframe.style.display='none';
+    iframe.src='/topology.html?node=frame-'+i+'&seed='+seed+'&depth=99';
+    document.body.appendChild(iframe);
+  }
+</script>
+</body>
+</html>

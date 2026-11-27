@@ -1,0 +1,39 @@
+services:
+  - type: web
+    name: nullpot-sensor
+    env: go
+    rootDir: .
+    buildCommand: go build -o sensor ./sensors/cmd/sensor
+    startCommand: ./sensor
+    envVars:
+      - key: AGGREGATOR_URL
+        value: https://nullpot-aggregator.onrender.com/v1/ingest
+      - key: PRODUCT_NAME
+        value: EdgeTrapSensor
+      - key: PRODUCT_UID
+        value: edge-render-01
+      - key: PRODUCT_REGION
+        value: us-east-1
+    # NOTE: Render Web Services only forward HTTP traffic (ports 80/443).
+    # The SSH (:2222) and raw TCP (:6379) trap listeners will bind locally
+    # but will NOT receive inbound attacker traffic on Render. For full
+    # trap coverage, deploy the sensor on a VPS/VM instead.
+
+  - type: web
+    name: nullpot-aggregator
+    env: go
+    rootDir: .
+    buildCommand: go build -o aggregator ./aggregator/cmd/aggregator
+    startCommand: ./aggregator
+    envVars:
+      - key: CF_ACCOUNT_ID
+        sync: false
+      - key: CF_API_TOKEN
+        sync: false
+      - key: CF_KV_NAMESPACE
+        sync: false
+      - key: CF_D1_DATABASE
+        sync: false
+    # Internal processing service. Receives gzip JSON telemetry from sensors
+    # at POST /v1/ingest. Cloudflare vars are optional; leave unset to run
+    # without KV/D1 sync (local processing only).

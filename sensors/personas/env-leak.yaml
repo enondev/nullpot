@@ -1,0 +1,31 @@
+id: env-leak-v0.1
+name: Environment Leak / Config Exposure
+banner: nullpot_env_leak
+canary_token_inject: true
+routes:
+  - path: /.env
+    method: GET
+    response:
+      status: 200
+      body: |
+        DATABASE_URL=postgres://cnry_admin:cnry_${CANARY_TOKEN}@db.internal:5432/app
+        AWS_SECRET_ACCESS_KEY=cnry_aws_secret_${CANARY_TOKEN}
+        API_KEY=cnry_api_${CANARY_TOKEN}
+      headers:
+        Content-Type: text/plain
+    capture:
+      body: true
+      headers: true
+  - path: /config
+    method: GET
+    response:
+      status: 200
+      body: '{"env":"production","debug":true,"secret":"cnry_config_${CANARY_TOKEN}"}'
+      headers:
+        Content-Type: application/json
+    capture:
+      body: true
+      headers: true
+ioc_capture:
+  - http://
+  - https://
