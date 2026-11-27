@@ -5,6 +5,7 @@ package widenet
 import (
 	"context"
 	"fmt"
+	"log"
 	"net"
 	"sync"
 
@@ -48,7 +49,7 @@ func (l *Listener) Start(ctx context.Context, _ chan<- specs.ThreatEvent) error 
 	defer pc.Close()
 
 	if err := applyOriginalDst(pc); err != nil {
-		return fmt.Errorf("widenet: apply SO_ORIGINAL_DST: %w", err)
+		log.Printf("widenet: SO_ORIGINAL_DST not available: %v", err)
 	}
 
 	buf := make([]byte, 65535)
