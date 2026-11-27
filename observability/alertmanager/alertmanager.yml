@@ -1,0 +1,53 @@
+global:
+  smtp_smtp_host: localhost
+  smtp_smtp_port: 25
+  smtp_from: nullpot-alerts@localhost
+
+route:
+  group_by: ['alertname', 'cluster', 'service']
+  group_wait: 30s
+  group_interval: 5m
+  repeat_interval: 4h
+  receiver: 'nullpot-team'
+  routes:
+    - match:
+        severity: critical
+      receiver: 'critical-team'
+    - match:
+        severity: warning
+      receiver: 'warning-team'
+
+receivers:
+  - name: 'nullpot-team'
+    email:
+      to: 'nullpot-team@localhost'
+    slack:
+      api_url: 'https://hooks.slack.com/services/NULLPOT_SLACK_WEBHOOK'
+      channel: '#nullpot-alerts'
+      title: '[nullpot] {{ .CommonLabels.severity }} - {{ .CommonSummary }}'
+      text: '{{ .CommonMessage }}'
+
+  - name: 'critical-team'
+    email:
+      to: 'nullpot-critical@localhost'
+    slack:
+      api_url: 'https://hooks.slack.com/services/NULLPOT_SLACK_WEBHOOK'
+      channel: '#nullpot-critical'
+      title: '[nullpot CRITICAL] {{ .CommonLabels.severity }} - {{ .CommonSummary }}'
+      text: '{{ .CommonMessage }}'
+
+  - name: 'warning-team'
+    email:
+      to: 'nullpot-warning@localhost'
+    slack:
+      api_url: 'https://hooks.slack.com/services/NULLPOT_SLACK_WEBHOOK'
+      channel: '#nullpot-warning'
+      title: '[nullpot WARNING] {{ .CommonLabels.severity }} - {{ .CommonSummary }}'
+      text: '{{ .CommonMessage }}'
+
+inhibit_rules:
+  - source_match:
+      severity: 'critical'
+    target_match:
+      severity: 'warning'
+    equal: ['alertname', 'cluster', 'service']

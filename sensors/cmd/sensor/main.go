@@ -15,6 +15,7 @@ import (
 	"time"
 
 	"github.com/enondev/nullpot/sensors/internal/core"
+	"github.com/enondev/nullpot/sensors/internal/obs"
 	"github.com/enondev/nullpot/sensors/internal/shipper"
 	"github.com/enondev/nullpot/sensors/internal/traps/http_persona"
 	"github.com/enondev/nullpot/sensors/internal/traps/raw_tcp"
@@ -29,6 +30,7 @@ func main() {
 	personasDir := flag.String("personas", "sensors/personas", "Persona specs directory")
 	sshListen := flag.String("ssh", ":2222", "SSH tarpit listen address")
 	rawTCPListen := flag.String("raw-tcp", ":6379", "Raw TCP trap listen address")
+	metricsAddr := flag.String("metrics", ":8090", "Metrics endpoint listen address")
 	productName := flag.String("product", "EdgeTrapSensor", "Sensor product name")
 	productUID := flag.String("uid", "edge-local-01", "Sensor product uid")
 	productRegion := flag.String("region", "local", "Sensor product region")
@@ -50,6 +52,9 @@ func main() {
 	canary := core.NewGenerator()
 
 	events := make(chan specs.ThreatEvent, 4096)
+
+	// Initialize observability.
+	metrics := obs.NewMetrics()
 
 	modules := []core.TrapModule{}
 
@@ -128,12 +133,14 @@ func main() {
 		}
 	}()
 
-	// Health endpoint.
-	healthSrv := &http.Server{Addr: ":8090"}
-	http.HandleFunc("/healthz", func(w http.ResponseWriter, r *http.Request) {
+	// Health and metrics endpoint.
+	mux := http.NewServeMux()
+	mux.HandleFunc("/healthz", func(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusOK)
 		fmt.Fprintf(w, "ok\n")
 	})
+	mux.Handle("/metrics", metrics.Handler())
+	healthSrv := &http.Server{Addr: *metricsAddr, Handler: mux}
 	go func() {
 		_ = healthSrv.ListenAndServe()
 	}()
@@ -153,7 +160,7 @@ func main() {
 		log.Printf("shipper stop: %v", err)
 	}
 
-	// Shut down the health server.
+	// Shut down the health/metrics server.
 	healthShutdownCtx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
 	if err := healthSrv.Shutdown(healthShutdownCtx); err != nil {

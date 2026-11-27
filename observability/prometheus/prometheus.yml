@@ -1,0 +1,41 @@
+# Prometheus configuration for nullpot observability
+global:
+  scrape_interval: 15s
+  evaluation_interval: 15s
+  scrape_timeout: 10s
+
+alerting:
+  alertmanagers:
+    - static_configs:
+        - targets:
+          - alertmanager:9093
+
+rule_files:
+  - /etc/prometheus/rules/*.yml
+
+scrape_configs:
+  - job_name: "nullpot-sensor"
+    static_configs:
+      - targets:
+        - sensor:8090
+    metrics_path: /metrics
+    scrape_interval: 15s
+
+  - job_name: "nullpot-aggregator"
+    static_configs:
+      - targets:
+        - aggregator:8091
+    metrics_path: /metrics
+    scrape_interval: 15s
+
+  - job_name: "nullpot-edge-api"
+    static_configs:
+      - targets:
+        - edge-api:8080
+    metrics_path: /metrics
+    scrape_interval: 15s
+
+  - job_name: "prometheus"
+    static_configs:
+      - targets:
+        - localhost:9090

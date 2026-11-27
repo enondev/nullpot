@@ -79,6 +79,28 @@ Cloudflare Worker serving sub-10ms lookups:
 - `GET /v1/misp/manifest.json` — MISP Core Format manifest
 - Workers AI scheduled threat-campaign summarizer (high-severity only)
 
+## Observability
+
+### Metrics (Prometheus)
+- **Sensor:** `:8090/metrics` — trap events, drops, channel size, uptime, canary tokens, HTTP requests, shipper batches, widenet packets
+- **Aggregator:** `:8091/metrics` — ingest events, correlations, risk scores, XARF dispatches, KV/D1 writes, Cloudflare errors, canary callbacks, double-verification
+- **Edge API:** standard Cloudflare Workers metrics
+
+### Tracing (OpenTelemetry)
+- Distributed tracing via OTLP HTTP exporter — trace context propagated across sensor→aggregator→edge API
+- Sampling rate: 10% by default
+
+### Logging
+- Structured JSON logging via `log/slog` with contextual fields (module, event_type, src_ip, dst_ip, risk_score, canary_id, payload_sha256)
+- Log levels: debug, info, warn, error
+
+### Dashboards (Grafana)
+- `observability/grafana/dashboards/nullpot-overview.json` — service status, trap events, risk scores, XARF reports, KV/D1 writes, channel size, canary tokens, double-verification correlations
+
+### Alerting (Prometheus + Alertmanager)
+- `observability/alertmanager/rules.yml` — service down, high drop rate, high risk scores, XARF failures, Cloudflare errors, KV/D1 write failures
+- `observability/alertmanager/alertmanager.yml` — Slack/email notification routing by severity
+
 ## Quick Start
 
 ```bash

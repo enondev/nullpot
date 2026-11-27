@@ -1,0 +1,132 @@
+groups:
+  - name: nullpot-sensor-alerts
+    rules:
+      - alert: SensorDown
+        expr: up{job="nullpot-sensor"} == 0
+        for: 2m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Sensor {{ $labels.instance }} is down"
+          description: "The nullpot sensor at {{ $labels.instance }} has been down for more than 2 minutes."
+
+      - alert: SensorHighEventDropRate
+        expr: rate(nullpot_events_dropped_total[5m]) > 10
+        for: 1m
+        labels:
+          severity: warning
+        annotations:
+          summary: "High event drop rate on sensor {{ $labels.instance }}"
+          description: "The sensor is dropping more than 10 events per second due to channel overflow."
+
+      - alert: SensorChannelNearlyFull
+        expr: nullpot_channel_size > 0.9
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Sensor channel nearly full on {{ $labels.instance }}"
+          description: "The sensor event channel is at {{ $value | humanizePercentage }} capacity."
+
+      - alert: WidenetNoPackets
+        expr: rate(nullpot_widenet_packets_total[10m]) == 0
+        for: 15m
+        labels:
+          severity: warning
+        annotations:
+          summary: "No Widenet packets detected on {{ $labels.instance }}"
+          description: "The Widenet listener has not captured any packets in the last 10 minutes."
+
+      - alert: HTTPTrapNoRequests
+        expr: rate(nullpot_http_requests_total[30m]) == 0
+        for: 30m
+        labels:
+          severity: info
+        annotations:
+          summary: "No HTTP trap requests on {{ $labels.instance }}"
+          description: "No HTTP decoy requests have been received in the last 30 minutes."
+
+  - name: nullpot-aggregator-alerts
+    rules:
+      - alert: AggregatorDown
+        expr: up{job="nullpot-aggregator"} == 0
+        for: 2m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Aggregator {{ $labels.instance }} is down"
+          description: "The nullpot aggregator at {{ $labels.instance }} has been down for more than 2 minutes."
+
+      - alert: AggregatorHighIngestRejectionRate
+        expr: rate(nullpot_ingest_rejections_total[5m]) > 5
+        for: 2m
+        labels:
+          severity: warning
+        annotations:
+          summary: "High ingest rejection rate on aggregator {{ $labels.instance }}"
+          description: "The aggregator is rejecting more than 5 events per second due to validation failures."
+
+      - alert: HighRiskScoreEvents
+        expr: rate(nullpot_risk_scores_total{risk_level="critical"}[5m]) > 5
+        for: 1m
+        labels:
+          severity: critical
+        annotations:
+          summary: "High number of critical risk events on {{ $labels.instance }}"
+          description: "More than 5 critical risk events per minute detected on aggregator {{ $labels.instance }}."
+
+      - alert: XARFDispatchFailures
+        expr: rate(nullpot_xarf_dispatch_failures_total[5m]) > 0
+        for: 2m
+        labels:
+          severity: warning
+        annotations:
+          summary: "XARF dispatch failures on aggregator {{ $labels.instance }}"
+          description: "XARF abuse report dispatches are failing on provider {{ $labels.provider }}."
+
+      - alert: CloudflareAPIErrors
+        expr: rate(nullpot_cloudflare_errors_total[5m]) > 5
+        for: 2m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Cloudflare API errors on aggregator {{ $labels.instance }}"
+          description: "More than 5 Cloudflare API errors per minute on endpoint {{ $labels.endpoint }}."
+
+      - alert: KVWritesHighFailureRate
+        expr: rate(nullpot_kv_writes_total{status="error"}[5m]) / rate(nullpot_kv_writes_total[5m]) > 0.05
+        for: 2m
+        labels:
+          severity: warning
+        annotations:
+          summary: "High KV write failure rate on aggregator {{ $labels.instance }}"
+          description: "More than 5% of KV writes are failing."
+
+      - alert: D1WritesHighFailureRate
+        expr: rate(nullpot_d1_writes_total{status="error"}[5m]) / rate(nullpot_d1_writes_total[5m]) > 0.05
+        for: 2m
+        labels:
+          severity: warning
+        annotations:
+          summary: "High D1 write failure rate on aggregator {{ $labels.instance }}"
+          description: "More than 5% of D1 row writes are failing."
+
+  - name: nullpot-edge-api-alerts
+    rules:
+      - alert: EdgeAPIDown
+        expr: up{job="nullpot-edge-api"} == 0
+        for: 2m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Edge API {{ $labels.instance }} is down"
+          description: "The nullpot edge API at {{ $labels.instance }} has been down for more than 2 minutes."
+
+      - alert: EdgeAPIHighErrorRate
+        expr: rate(http_requests_total{code=~"5.."}[5m]) > 10
+        for: 2m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Edge API high error rate on {{ $labels.instance }}"
+          description: "The edge API is returning more than 10 5xx errors per second."

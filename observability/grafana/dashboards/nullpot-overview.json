@@ -1,0 +1,348 @@
+{
+  "id": null,
+  "uid": "nullpot-overview",
+  "title": "nullpot - Threat & Abuse Intelligence Platform",
+  "timezone": "browser",
+  "schemaVersion": 38,
+  "version": 1,
+  "refresh": "30s",
+  "time": {
+    "from": "now-1h",
+    "to": "now"
+  },
+  "panels": [
+    {
+      "id": 1,
+      "title": "Sensor Status",
+      "type": "stat",
+      "gridPos": { "h": 3, "w": 4, "x": 0, "y": 0 },
+      "options": {
+        "reduceOptions": {
+          "values": false,
+          "calcs": ["lastNotNull"],
+          "fields": ""
+        },
+        "orientation": "auto",
+        "textMode": "value_and_name",
+        "colorMode": "value",
+        "graphMode": "none",
+        "justifyMode": "auto",
+        "cellGap": null,
+        "showPercentageChange": false
+      },
+      "targets": [
+        {
+          "expr": "up{job=\"nullpot-sensor\"}",
+          "refId": "A"
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "title": "Aggregator Status",
+      "type": "stat",
+      "gridPos": { "h": 3, "w": 4, "x": 4, "y": 0 },
+      "options": {
+        "reduceOptions": {
+          "values": false,
+          "calcs": ["lastNotNull"],
+          "fields": ""
+        },
+        "orientation": "auto",
+        "textMode": "value_and_name",
+        "colorMode": "value",
+        "graphMode": "none",
+        "justifyMode": "auto",
+        "cellGap": null,
+        "showPercentageChange": false
+      },
+      "targets": [
+        {
+          "expr": "up{job=\"nullpot-aggregator\"}",
+          "refId": "A"
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "title": "Edge API Status",
+      "type": "stat",
+      "gridPos": { "h": 3, "w": 4, "x": 8, "y": 0 },
+      "options": {
+        "reduceOptions": {
+          "values": false,
+          "calcs": ["lastNotNull"],
+          "fields": ""
+        },
+        "orientation": "auto",
+        "textMode": "value_and_name",
+        "colorMode": "value",
+        "graphMode": "none",
+        "justifyMode": "auto",
+        "cellGap": null,
+        "showPercentageChange": false
+      },
+      "targets": [
+        {
+          "expr": "up{job=\"nullpot-edge-api\"}",
+          "refId": "A"
+        }
+      ]
+    },
+    {
+      "id": 4,
+      "title": "Trap Events per Module",
+      "type": "timeseries",
+      "gridPos": { "h": 8, "w": 8, "x": 0, "y": 3 },
+      "options": {
+        "legend": {
+          "displayMode": "list",
+          "placement": "right"
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "desc"
+        }
+      },
+      "targets": [
+        {
+          "expr": "rate(nullpot_trap_events_total[1m])",
+          "refId": "A",
+          "legendFormat": "{{ module }} - {{ event_type }}"
+        }
+      ]
+    },
+    {
+      "id": 5,
+      "title": "Risk Score Distribution",
+      "type": "histogram",
+      "gridPos": { "h": 8, "w": 8, "x": 8, "y": 3 },
+      "options": {},
+      "targets": [
+        {
+          "expr": "nullpot_risk_score_distribution",
+          "refId": "A",
+          "legendFormat": "{{ risk_level }}"
+        }
+      ]
+    },
+    {
+      "id": 6,
+      "title": "Event Drop Rate",
+      "type": "timeseries",
+      "gridPos": { "h": 6, "w": 8, "x": 0, "y": 11 },
+      "options": {
+        "legend": {
+          "displayMode": "list",
+          "placement": "right"
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "desc"
+        }
+      },
+      "targets": [
+        {
+          "expr": "rate(nullpot_events_dropped_total[1m])",
+          "refId": "A",
+          "legendFormat": "{{ module }}"
+        }
+      ]
+    },
+    {
+      "id": 7,
+      "title": "Risk Levels",
+      "type": "timeseries",
+      "gridPos": { "h": 6, "w": 8, "x": 8, "y": 11 },
+      "options": {
+        "legend": {
+          "displayMode": "list",
+          "placement": "right"
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "desc"
+        }
+      },
+      "targets": [
+        {
+          "expr": "rate(nullpot_risk_scores_total[1m])",
+          "refId": "A",
+          "legendFormat": "{{ risk_level }}"
+        }
+      ]
+    },
+    {
+      "id": 8,
+      "title": "XARF Reports Dispatched",
+      "type": "timeseries",
+      "gridPos": { "h": 6, "w": 8, "x": 0, "y": 17 },
+      "options": {
+        "legend": {
+          "displayMode": "list",
+          "placement": "right"
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "desc"
+        }
+      },
+      "targets": [
+        {
+          "expr": "rate(nullpot_xarf_reports_total[1m])",
+          "refId": "A",
+          "legendFormat": "{{ provider }} - {{ status }}"
+        }
+      ]
+    },
+    {
+      "id": 9,
+      "title": "Cloudflare KV/D1 Writes",
+      "type": "timeseries",
+      "gridPos": { "h": 6, "w": 8, "x": 8, "y": 17 },
+      "options": {
+        "legend": {
+          "displayMode": "list",
+          "placement": "right"
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "desc"
+        }
+      },
+      "targets": [
+        {
+          "expr": "rate(nullpot_kv_writes_total[1m])",
+          "refId": "A",
+          "legendFormat": "KV {{ namespace }} - {{ status }}"
+        },
+        {
+          "expr": "rate(nullpot_d1_writes_total[1m])",
+          "refId": "B",
+          "legendFormat": "D1 {{ database }} - {{ status }}"
+        }
+      ]
+    },
+    {
+      "id": 10,
+      "title": "Channel Size",
+      "type": "gauge",
+      "gridPos": { "h": 6, "w": 8, "x": 0, "y": 23 },
+      "options": {
+        "orientation": "auto",
+        "reduceOptions": {
+          "values": false,
+          "calcs": ["lastNotNull"],
+          "fields": ""
+        },
+        "showThresholdGauge": false,
+        "showThresholdLabels": false,
+        "text": {},
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "cellGap": null
+      },
+      "targets": [
+        {
+          "expr": "nullpot_channel_size",
+          "refId": "A",
+          "legendFormat": "{{ channel }}"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "min": 0,
+          "max": 4096,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "color": "green", "value": null },
+              { "color": "orange", "value": 3686 },
+              { "color": "red", "value": 3891 }
+            ]
+          }
+        },
+        "overrides": []
+      }
+    },
+    {
+      "id": 11,
+      "title": "Canary Tokens Generated",
+      "type": "timeseries",
+      "gridPos": { "h": 6, "w": 8, "x": 8, "y": 23 },
+      "options": {
+        "legend": {
+          "displayMode": "list",
+          "placement": "right"
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "desc"
+        }
+      },
+      "targets": [
+        {
+          "expr": "rate(nullpot_canary_tokens_total[1m])",
+          "refId": "A",
+          "legendFormat": "{{ kind }} - {{ action }}"
+        }
+      ]
+    },
+    {
+      "id": 12,
+      "title": "Double-Verification Correlations",
+      "type": "timeseries",
+      "gridPos": { "h": 6, "w": 8, "x": 0, "y": 29 },
+      "options": {
+        "legend": {
+          "displayMode": "list",
+          "placement": "right"
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "desc"
+        }
+      },
+      "targets": [
+        {
+          "expr": "rate(nullpot_double_verification_correlations_total[1m])",
+          "refId": "A",
+          "legendFormat": "{{ confidence }}"
+        }
+      ]
+    },
+    {
+      "id": 13,
+      "title": "Event Store Size",
+      "type": "stat",
+      "gridPos": { "h": 6, "w": 8, "x": 8, "y": 29 },
+      "options": {
+        "reduceOptions": {
+          "values": false,
+          "calcs": ["lastNotNull"],
+          "fields": ""
+        },
+        "orientation": "auto",
+        "textMode": "value_and_name",
+        "colorMode": "value",
+        "graphMode": "none",
+        "justifyMode": "auto",
+        "cellGap": null,
+        "showPercentageChange": false
+      },
+      "targets": [
+        {
+          "expr": "nullpot_event_store_size",
+          "refId": "A"
+        }
+      ]
+    }
+  ],
+  "annotations": {
+    "list": []
+  },
+  "templating": {
+    "list": []
+  }
+}
