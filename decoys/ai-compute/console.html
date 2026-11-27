@@ -36,9 +36,9 @@
 <header>
   <div class="logo">NEXUS<span style="color:var(--accent)">COMPUTE</span> | Console</div>
   <nav>
-    <a href="/">Home</a>
-    <a href="/contact.html">Contact</a>
-    <a href="/login.html">Sign Out</a>
+    <a href=".">Home</a>
+    <a href="contact.html">Contact</a>
+    <a href="login.html">Sign Out</a>
   </nav>
 </header>
 
@@ -82,7 +82,7 @@
 <div style="margin-top:40px;padding:24px;background:#0f172a;border:1px solid #334155;border-radius:8px">
   <h3 style="color:var(--accent);margin-bottom:12px">Quick Commands</h3>
   <div class="mono" style="margin-bottom:8px">nexus console clusters list --region us-east-1 --format json</div>
-  <div class="mono" style="margin-bottom:8px">nexus console keys rotate --pattern "sk-prod_*" --dry-run</div>
+  <div class="mono" style="margin-bottom:8px">nexus console keys rotate --pattern "nullpot_prod_key_*" --dry-run</div>
   <div class="mono" style="margin-bottom:8px">nexus console secrets sync --source vault --target k8s</div>
   <div class="code" style="margin-top:12px"># Session context
 export NEXUS_CONSOLE_SESSION="a1b2c3d4-e5f6-7890-abcd-ef1234567890"
@@ -92,7 +92,7 @@ export NEXUS_CONSOLE_METRICS_ENDPOINT="https://console-api.nexuscompute.internal
 
 <div class="footer">
   &copy; 2026 Nexus Compute Inc. &bull; Console v2.4.1
-  <a href="/" style="color:var(--accent);margin-left:16px">Customer Portal</a>
+  <a href="." style="color:var(--accent);margin-left:16px">Customer Portal</a>
 </div>
 
 <script src="telemetry.js"></script>

@@ -6,16 +6,16 @@ compatibility_flags = ["nodejs_compat"]
 [observability]
 enabled = true
 
-[kv_namespaces]
+[[kv_namespaces]]
 binding = "KV"
 id = "" # set via wrangler secret or environment variable
 
-[d1_databases]
+[[d1_databases]]
 binding = "D1"
 database_name = "nullpot-edge-db"
 database_id = "" # set via wrangler secret or environment variable
 
-[[ai]]
+[ai]
 binding = "AI"
 
 [vars]

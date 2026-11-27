@@ -66,20 +66,20 @@
     </div>
     <div class="footer">
       &copy; 2026 Nexus Compute Inc. &bull;
-      <a href="/signup.html" style="color:var(--accent)">Create account</a> &bull;
-      <a href="/contact.html" style="color:var(--accent)">Contact</a> &bull;
-      <a href="/" style="color:var(--accent)">Home</a>
+      <a href="signup.html" style="color:var(--accent)">Create account</a> &bull;
+      <a href="contact.html" style="color:var(--accent)">Contact</a> &bull;
+      <a href="." style="color:var(--accent)">Home</a>
     </div>
   </div>
 </div>
 
 <div class="hidden">
   <!-- rotated creds -->
-  <input type="text" value="postgresql://NULLPOT_LOGIN_HIDDEN_DB:RePl1c4t3P@ssw0rd!@db-repl.internal:5432/prod?sslmode=require">
-  <input type="text" value="AIzaSy_NULLPOT_LOGIN_HIDDEN_GCP_ABCDEFGHIJKLMNOPQRSTUVWXYZ">
-  <input type="text" value="sk_live_NULLPOT_LOGIN_HIDDEN_STRIPE_03_abc123def456">
+  <input type="text" value="postgresql://db_admin:RePl1c4t3P@ssw0rd!@db-repl.internal:5432/prod?sslmode=require">
+  <input type="text" value="AIzaSyK7m2n4p6q8t0v2x4z6a8c0e2g4i6k1m3o5q7s9u">
+  <input type="text" value="nullpot_test_key_05">
   <textarea>-----BEGIN RSA PRIVATE KEY-----
-NULLPOT_LOGIN_HIDDEN_04_DO_NOT_DEPLOY_THIS_KEY
+LOGIN_HIDDEN_04_DO_NOT_DEPLOY_THIS_KEY
 -----END RSA PRIVATE KEY-----</textarea>
 </div>
 
@@ -112,7 +112,7 @@ NULLPOT_LOGIN_HIDDEN_04_DO_NOT_DEPLOY_THIS_KEY
       setTimeout(function(){
         if(trap){
           // Redirect to topology trap (infinite recursion)
-          window.location.href='/topology.html?node=oauth-'+provider+'&seed=oauth&depth=0';
+          window.location.href='topology.html?node=oauth-'+provider+'&seed=oauth&depth=0';
         }else{
           // Silent POST to telemetry aggregator, then show provider error
           __nexus.beacon('oauth_'+provider,'oauth_silent_post',{provider:provider});
