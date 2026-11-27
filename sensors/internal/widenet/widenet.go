@@ -47,9 +47,9 @@ func (l *Listener) Start(ctx context.Context, _ chan<- specs.ThreatEvent) error 
 	}
 	defer pc.Close()
 
-	// TODO(phase3): Apply SO_ORIGINAL_DST via syscall on Linux:
-	//   syscall.SetsockoptInt(fd, syscall.SOL_IP, 0x50, 1)
-	// Requires platform-specific build tags due to syscall.Handle typing.
+	if err := applyOriginalDst(pc); err != nil {
+		return fmt.Errorf("widenet: apply SO_ORIGINAL_DST: %w", err)
+	}
 
 	buf := make([]byte, 65535)
 	for {
