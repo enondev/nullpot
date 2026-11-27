@@ -62,7 +62,7 @@ jobs:
           find decoys/ai-compute -name '*.html' -exec sed -i "s/{{CF_WEB_ANALYTICS_TOKEN}}/${{ secrets.CF_WEB_ANALYTICS_TOKEN }}/g" {} +
 
       - name: Upload decoy site artifact for GitHub Pages
-        uses: actions/upload-pages-artifact@v4
+        uses: actions/upload-pages-artifact@v3
         with:
           path: decoys/ai-compute
 
