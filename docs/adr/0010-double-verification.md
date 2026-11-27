@@ -23,3 +23,5 @@ same IP/subnet.
 - Single-packet scans never classified as high-confidence attackers.
 - Second-order infrastructure attribution scores hosting ASNs 10x higher.
 - Benign researchers excluded from abuse reports and blocklists.
+- `C2Extractor` is wired into `processEvent`: IOCs are extracted from `PayloadPreview` and set on `RiskInputs.ExtractedIOCs`.
+- `IsConfirmedC2` requires high-confidence correlation AND non-empty extracted IOC evidence; confirmed C2 score bonus no longer fires on recon-only events.

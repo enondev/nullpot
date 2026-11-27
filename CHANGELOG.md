@@ -2,159 +2,111 @@
 
 All notable changes to nullpot are documented in this file.
 
+The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
+
 ## [Unreleased]
 
-### Phase 0 — Repository foundation & CI
+### Added
 
 - Initial repo layout (go.mod, directory skeleton, CI workflow, ADR-001)
-
-### Phase 1 — specs/: OpenAPI 3.1 + Go serialization models
-
 - OpenAPI 3.1 spec (Sensor Ingest + Edge Lookup API)
 - OCSF-aligned ThreatEvent struct with Validate()
 - STIX 2.1 Bundle/Indicator/Sighting serialization models
 - MISP Core Format event/attribute export models
 - XARF automated abuse report generator models (ADR-002)
-
-### Phase 2 — sensors/internal/core: TrapModule, Persona loader, Canary Token generator
-
 - TrapModule interface (Name(), Start()) + Registry (ADR-001 contract)
 - PersonaSpec YAML model + Loader for sensors/personas/*.yaml (ADR-003)
 - Session-bound Canary Token generator with callback attribution (ADR-003)
-
-### Phase 3 — sensors/internal/widenet: SO_ORIGINAL_DST listener
-
 - All-port TCP/UDP packet listener emitting OCSF port_scan events (ADR-004)
 - SO_ORIGINAL_DST documented for Linux build tags
-
-### Phase 1 — sensors/internal/widenet: SO_ORIGINAL_DST implementation
-
 - Apply SO_ORIGINAL_DST syscall on Linux to recover original destination of redirected traffic
 - Platform-specific build tags: widenet_linux.go (Linux), widenet_other.go (non-Linux error)
-
-### Phase 2 — aggregator/internal/correlate: Fix double-verification correlation
-
-- Fix processEvent: only record Widenet port sweeps as recon, only record trap hits as exploitation
-- Prevent single-packet scans from self-classifying as high-confidence attackers
-- ADR-010 double-verification logic unchanged (implementation bug fix)
-
-### Phase 3 — aggregator/internal/scoring: Fix IsConfirmedC2 score inflation
-
-- Fix processEvent: IsConfirmedC2 requires high-confidence correlation AND extracted IOC evidence
-- Prevent score inflation from confirmed C2 bonus on recon-only events
-
-### Phase 4 — aggregator/internal/obs: Real OTEL tracing
-
-- Replace no-op tracer stubs with real OTLP HTTP exporter
-- Trace context propagated across sensor→aggregator→edge API
-- ADR-017 (ADR-0017-opentelemetry-tracing.md)
-
-### Phase 5 — edge-api/src/routes/: D1 fallback for KV cache misses
-
-- GET /v1/ip/:ip falls back to D1 ip_reputation table on KV miss
-- GET /v1/asn/:asn falls back to D1 asn_reputation table on KV miss
-- D1 results backfilled to KV for subsequent requests
-- Parameterized SQL queries prevent injection
-
-### Phase 6 — docs/adr/: Complete ADR documentation
-
+- Real OTLP HTTP exporter replacing no-op tracer stubs
+- Trace context propagated across sensor→aggregator→edge API (ADR-017)
 - ADR-0007: Sensor Trap Module architecture
 - ADR-0017: OpenTelemetry tracing architecture
-
-### Phase 7 — decoys/ai-compute/telemetry.js: Fix canary callback URL
-
-- Replace placeholder aggregator URL with proper internal endpoint
-
-### Phase 8 — .github/workflows/ci.yml: Restore golangci-lint
-
+- Replace placeholder aggregator URL with proper internal endpoint in decoys/ai-compute/telemetry.js
 - Re-add golangci-lint step with Go 1.26-compatible version
-
-### Phase 9 — AGENTS.md: Add ADR cross-references
-
-- Add ADR references to rules 1, 5, 6, and 7
-
-### Phase 4 — sensors/internal/traps/http_persona: YAML-driven HTTP/HTTPS trap
-
-- OpenAPI/YAML-driven decoy HTTP trap serving persona routes (ADR-005)
+- Add ADR references to AGENTS.md rules 1, 5, 6, and 7
+- YAML-driven decoy HTTP trap serving persona routes (ADR-005)
 - Canary token injection, SHA-256 payload hashing, OCSF event emission (ADR-006)
 - Safe payload handling: never execute captured content (ADR-006)
-
-### Phase 5 — sensors/internal/traps/ssh: SSH tarpit & command/dropper trap
-
 - SSH tarpit capturing auth attempts, commands, and dropped payloads
 - SHA-256 quarantine (never execute), OCSF Detection Finding events (ADR-006)
 - Quarantine map capped at 10,000 entries with LRU eviction
-
-### Phase 6 — sensors/internal/traps/raw_tcp: stateful banner/payload traps
-
 - Stateful TCP trap for Redis :6379 and Docker :2375 banners/payloads
 - SHA-256 quarantine (never execute), OCSF events
 - Quarantine map capped at 10,000 entries with LRU eviction
-
-### Phase 7 — sensors/cmd/sensor: unified sensor daemon
-
 - Single-binary daemon wiring widenet + http_persona + ssh + raw_tcp modules
 - Bounded buffered channel (4096) with drop-oldest overflow
 - Shipper exporter (gzip JSON batch POST, batch size 100, 5s flush timeout)
 - /healthz observability endpoint, graceful shutdown on SIGINT/SIGTERM (ADR-008)
 - Channel closed on shutdown; health server stopped; no goroutine leaks
-
-### Phase 8 — aggregator/internal/ingest: OpenAPI webhook receiver
-
 - POST /v1/ingest with gzip JSON decompression
 - Single event or batch JSON acceptance
 - ThreatEvent.Validate() before storage; 202 Accepted / 400 Bad Request
 - In-memory EventStore with Add/All/Len; copy-on-read for safety
-
-### Phase 9 — aggregator/internal/correlate: double-verification engine
-
 - Double-verification: recon + exploit from same IP within 24h = high confidence
 - C2/IOC extractor (URLs, domains, IPs from captured commands/prompts)
 - Researcher allowlist (Shodan, Censys, Shadowserver, crawlers)
 - TTL decay: 6-24h scanner IPs, 7-30d confirmed C2
 - ASN scoring 10x for confirmed C2 infrastructure (ADR-010)
-
-### Phase 10 — aggregator/internal/scoring: prefix table + risk scorer
-
 - Sorted CIDR prefix table with most-specific-first match
 - Risk scorer: correlation + GeoIP/ASN + prefix modifiers (0-100 score)
 - Risk levels: low/medium/high/critical; score clamped to 0-100
 - TTL: confirmed C2 336h, residential VPS 12h, default 6h
 - StubMMDB for testing; real MaxMind mmdb plugged via MMDBReader (ADR-011)
-
-### Phase 11 — aggregator/internal/abuse: XARF report dispatcher
-
 - ShouldDispatch gate: no port scans, requires evidence payload
 - XARF 1.0 report build with reporter/incident/evidence (no raw payloads)
 - Dispatcher POSTs to configured Trust & Safety endpoints
 - Dispatch record maintained in memory (ADR-012)
-
-### Phase 12 — aggregator/internal/cloudflare: batched KV + D1 writer
-
 - KVUploader with daily write cap (default 1,000/day)
 - D1Writer with daily row cap (default 100,000/day)
 - Sync coordinates KV + D1 batches with error reporting
 - Free-tier guardrails enforced in code (ADR-013)
-
-### Phase 13 — aggregator/cmd/aggregator: central daemon
-
 - Wires ingest -> correlate -> score -> abuse -> cloudflare sync
 - Allowlist check skips benign researchers
 - Only critical-risk events synced to Cloudflare
 - Health endpoint on :8091, graceful shutdown (ADR-014)
-
-### Phase 14 — edge-api/: Cloudflare Worker + KV + D1
-
-- Worker routes: GET /v1/ip/:ip, /v1/asn/:asn, /v1/edl/:feed.txt,
-  /v1/stix/bundle.json, /v1/misp/manifest.json
+- Worker routes: GET /v1/ip/:ip, /v1/asn/:asn, /v1/edl/:feed.txt, /v1/stix/bundle.json, /v1/misp/manifest.json
 - KV-backed <10ms reads; EDL plain-text blocklist output
 - STIX 2.1 bundle with application/stix+json;version=2.1 content type
 - Workers AI scheduled summarizer (score >= 75 events only)
 - D1 schema: ip_reputation, asn_reputation, events, blocklist (ADR-015)
-
-### Phase 5 — edge-api/src/routes/: D1 fallback for KV cache misses
-
-- GET /v1/ip/:ip falls back to D1 ip_reputation table on KV miss
-- GET /v1/asn/:asn falls back to D1 asn_reputation table on KV miss
+- D1 fallback for KV cache misses on GET /v1/ip/:ip and GET /v1/asn/:asn
 - D1 results backfilled to KV for subsequent requests
 - Parameterized SQL queries to prevent injection
+- Widenet listener payload capture: SHA-256 hash and truncated PayloadPreview fields
+- Widenet port binding: --widenet-listen flag defaulting to 0.0.0.0:53, replacing hardcoded 0.0.0.0:0
+- Scoring ExtractedIOCs: ExtractedIOCs []string field on RiskInputs and RiskScore structs
+- Ingest rate limiting: per-IP token bucket (10 req/s, burst 20)
+- Ingest EventStore bounded eviction: maxEvents default 1,000,000 with FIFO eviction
+- Aggregator processEvent refactor: ProcessingContext struct with helper functions
+- C2 extractor wiring into processEvent pipeline
+- Aggregator pipeline integration tests
+- Sensor-to-aggregator integration tests via shipper
+
+### Changed
+
+- IsConfirmedC2 now requires high-confidence correlation AND non-empty extracted IOC evidence
+- correlate.C2Extractor wired into processEvent to extract IOCs from PayloadPreview
+- ADR-010 updated to document C2Extractor wiring and IsConfirmedC2 gating requirements
+- Add ADR references to AGENTS.md rules 1, 5, 6, and 7
+
+### Fixed
+
+- Fix processEvent: only record Widenet port sweeps as recon, only record trap hits as exploitation
+- Prevent single-packet scans from self-classifying as high-confidence attackers
+- Fix processEvent: IsConfirmedC2 requires high-confidence correlation AND extracted IOC evidence
+- Prevent score inflation from confirmed C2 bonus on recon-only events
+- Replace placeholder aggregator URL with proper internal endpoint
+- Widenet listener no longer discards captured payload (_ = payload replaced with SHA-256 hashing)
+- Widenet sensor no longer binds to random ephemeral port 0; port validation fails fast on port 0
+- processEvent no longer calls both RecordSweep and RecordHit on every event; sweeps only from Widenet, hits only from trap modules
+- IsConfirmedC2 no longer always equal IsHighConfidence; now requires extracted IOC evidence
+
+### Security
+
+- Added per-IP rate limiting to ingest receiver to prevent gzip JSON flood exhaustion
+- Added bounded FIFO eviction to EventStore to prevent unbounded memory growth
+- Captured payloads are SHA-256 hashed and truncated, never executed
