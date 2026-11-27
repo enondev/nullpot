@@ -93,6 +93,7 @@ type RiskInputs struct {
 	Geo              GeoInfo
 	IsConfirmedC2    bool
 	IsResidentialVPS bool
+	ExtractedIOCs    []string
 }
 
 // CorrelationResult is the output from the correlation engine.
@@ -114,11 +115,12 @@ type GeoInfo struct {
 
 // RiskScore is the output of risk scoring.
 type RiskScore struct {
-	Score     float64 // 0-100
-	RiskLevel string  // low, medium, high, critical
-	TTLHours  int
-	Geo       GeoInfo
-	Factors   []string
+	Score         float64 // 0-100
+	RiskLevel     string  // low, medium, high, critical
+	TTLHours      int
+	Geo           GeoInfo
+	Factors       []string
+	ExtractedIOCs []string
 }
 
 // Scorer combines correlation, GeoIP/ASN, and prefix data into a risk score.
@@ -212,11 +214,12 @@ func (s *Scorer) Score(inputs RiskInputs) RiskScore {
 	}
 
 	return RiskScore{
-		Score:     score,
-		RiskLevel: riskLevel,
-		TTLHours:  ttl,
-		Geo:       geo,
-		Factors:   factors,
+		Score:         score,
+		RiskLevel:     riskLevel,
+		TTLHours:      ttl,
+		Geo:           geo,
+		Factors:       factors,
+		ExtractedIOCs: inputs.ExtractedIOCs,
 	}
 }
 
