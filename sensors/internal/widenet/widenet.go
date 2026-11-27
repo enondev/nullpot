@@ -4,6 +4,8 @@ package widenet
 
 import (
 	"context"
+	"crypto/sha256"
+	"encoding/hex"
 	"fmt"
 	"log"
 	"net"
@@ -97,7 +99,8 @@ func (l *Listener) eventFromPacket(payload []byte, addr net.Addr) *specs.ThreatE
 	if ip == "" {
 		return nil
 	}
-	_ = payload
+	sum := sha256.Sum256(payload)
+	payloadSHA := hex.EncodeToString(sum[:])
 	return &specs.ThreatEvent{
 		ClassUID:    specs.ClassUIDNetworkActivity,
 		CategoryUID: specs.CategoryUIDPotentialSecurityIssue,
@@ -118,7 +121,8 @@ func (l *Listener) eventFromPacket(payload []byte, addr net.Addr) *specs.ThreatE
 		},
 		Enrichment: specs.Enrichment{
 			Module:         "widenet",
-			PayloadPreview: "",
+			PayloadPreview: truncate(string(payload), 200),
+			PayloadSHA256:  payloadSHA,
 		},
 	}
 }
@@ -137,4 +141,11 @@ func hostPort(addr net.Addr) (string, uint16) {
 		return a.IP.String(), uint16(a.Port)
 	}
 	return "", 0
+}
+
+func truncate(s string, n int) string {
+	if len(s) <= n {
+		return s
+	}
+	return s[:n]
 }
