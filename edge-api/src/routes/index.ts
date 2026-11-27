@@ -251,7 +251,7 @@ async function handleASNLookup(env: Env, asn: string, ctx: ExecutionContext): Pr
   if (rep) {
     // Backfill KV in background
     ctx.waitUntil(
-      env.KV.put(key, JSON.stringify(rep), { expirationTtl: parseTTLSeconds(rep.ttl) }).catch(() => {})
+      env.KV.put(key, JSON.stringify(rep), { expirationTtl: 3600 }).catch(() => {})
     );
     return new Response(JSON.stringify(rep), {
       status: 200,
