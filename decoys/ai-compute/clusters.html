@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Clusters - Nexus Compute</title>
+<style>
+  :root{--bg:#030712;--card:#0b1120;--accent:#38bdf8;--text:#f1f5f9;--muted:#94a3b8;}
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;background:var(--bg);color:var(--text)}
+  .container{max-width:1100px;margin:0 auto;padding:24px}
+  header{display:flex;justify-content:space-between;align-items:center;padding:24px 0;border-bottom:1px solid #1e293b;margin-bottom:32px}
+  .logo{font-size:1.25rem;font-weight:800;letter-spacing:-0.025em;background:linear-gradient(135deg,#38bdf8,#818cf8);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+  nav a{color:var(--muted);text-decoration:none;margin-left:24px;font-size:0.9rem}
+  nav a:hover{color:var(--accent)}
+  .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:24px}
+  .card{background:var(--card);border:1px solid #1e293b;border-radius:12px;padding:24px}
+  .card h3{font-size:1.1rem;margin-bottom:12px;color:var(--accent)}
+  .card p{color:var(--muted);font-size:0.9rem;margin-bottom:16px}
+  .spec{font-family:ui-monospace,monospace;font-size:0.85rem;color:#cbd5e1}
+  .btn{display:block;width:100%;padding:14px;border-radius:8px;background:var(--accent);color:#000;text-decoration:none;font-weight:600;font-size:1rem;margin-bottom:16px}
+  .btn:hover{background:#7dd3fc}
+  .btn:disabled{opacity:0.5;cursor:not-allowed}
+  .status{font-size:0.8rem;font-weight:600;text-transform:uppercase;letter-spacing:0.05em}
+  .status.active{color:#22c55e}
+  .status.pending{color:#eab308}
+  .status.error{color:#ef4444}
+  .footer{margin-top:40px;padding-top:24px;border-top:1px solid #1e293b;color:var(--muted);font-size:0.8rem;text-align:center}
+  .footer a{color:var(--accent);text-decoration:none}
+</style>
+</head>
+<body>
+<header>
+  <div class="logo">NEXUS<span style="color:var(--accent)">COMPUTE</span> | Clusters</div>
+  <nav>
+    <a href="/">Home</a>
+    <a href="/products.html">Products</a>
+    <a href="/api.html">API Docs</a>
+    <a href="/contact.html">Contact</a>
+  </nav>
+</header>
+<div class="container">
+  <div class="card">
+    <h2>Your Clusters</h2>
+    <p>Manage your GPU compute clusters across all regions.</p>
+    <div class="grid">
+      <div class="card">
+        <h3>llm-training-01</h3>
+        <p>8x H100 SXM5 - us-east-1</p>
+        <div class="spec">80GB HBM3 per GPU</div>
+        <div class="spec">NVLink 900 GB/s</div>
+        <span class="status active">● Active</span>
+        <a href="#" class="btn">Manage</a>
+      </div>
+      <div class="card">
+        <h3>inference-prod</h3>
+        <p>4x A100 80GB - eu-central-1</p>
+        <div class="spec">80GB HBM2e per GPU</div>
+        <div class="spec">NVLink 600 GB/s</div>
+        <span class="status active">● Active</span>
+        <a href="#" class="btn">Manage</a>
+      </div>
+      <div class="card">
+        <h3>dev-sandbox</h3>
+        <p>1x L40S - ap-southeast-1</p>
+        <div class="spec">48GB GDDR6</div>
+        <div class="spec">Starting $1.10/GPU/hr</div>
+        <span class="status pending">○ Pending</span>
+        <a href="#" class="btn">Configure</a>
+      </div>
+    </div>
+  </div>
+  <div class="footer">
+    &copy; 2026 Nexus Compute Inc. &bull;
+    <a href="/" style="color:var(--accent);margin-left:16px">Home</a> &bull;
+    <a href="/contact.html" style="color:var(--accent);margin-left:16px">Contact</a>
+  </div>
+</div>
+</body>
+</html>
