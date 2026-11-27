@@ -43,6 +43,36 @@ All notable changes to nullpot are documented in this file.
 - Fix processEvent: IsConfirmedC2 requires high-confidence correlation AND extracted IOC evidence
 - Prevent score inflation from confirmed C2 bonus on recon-only events
 
+### Phase 4 — aggregator/internal/obs: Real OTEL tracing
+
+- Replace no-op tracer stubs with real OTLP HTTP exporter
+- Trace context propagated across sensor→aggregator→edge API
+- ADR-017 (ADR-0017-opentelemetry-tracing.md)
+
+### Phase 5 — edge-api/src/routes/: D1 fallback for KV cache misses
+
+- GET /v1/ip/:ip falls back to D1 ip_reputation table on KV miss
+- GET /v1/asn/:asn falls back to D1 asn_reputation table on KV miss
+- D1 results backfilled to KV for subsequent requests
+- Parameterized SQL queries prevent injection
+
+### Phase 6 — docs/adr/: Complete ADR documentation
+
+- ADR-0007: Sensor Trap Module architecture
+- ADR-0017: OpenTelemetry tracing architecture
+
+### Phase 7 — decoys/ai-compute/telemetry.js: Fix canary callback URL
+
+- Replace placeholder aggregator URL with proper internal endpoint
+
+### Phase 8 — .github/workflows/ci.yml: Restore golangci-lint
+
+- Re-add golangci-lint step with Go 1.26-compatible version
+
+### Phase 9 — AGENTS.md: Add ADR cross-references
+
+- Add ADR references to rules 1, 5, 6, and 7
+
 ### Phase 4 — sensors/internal/traps/http_persona: YAML-driven HTTP/HTTPS trap
 
 - OpenAPI/YAML-driven decoy HTTP trap serving persona routes (ADR-005)

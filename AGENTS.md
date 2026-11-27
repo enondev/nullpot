@@ -77,7 +77,7 @@ A clean-slate, modular, globally distributed Threat & Abuse Intelligence Platfor
 
 ## Core Architecture & Engineering Rules
 1. **Modular Plugin Interface (`TrapModule`) + Persona Specs:**
-   - Every protocol engine must implement `TrapModule` (`Name() string`, `Start(ctx context.Context, events chan<- ocsf.ThreatEvent) error`).
+   - Every protocol engine must implement `TrapModule` (`Name() string`, `Start(ctx context.Context, events chan<- ocsf.ThreatEvent) error`) (ADR-0007).
    - HTTP/AI/Cloud decoys must load behavior, headers, routes, and fake schemas from declarative YAML Persona files (`sensors/personas/*.yaml`) or OpenAPI specs so decoys can be rotated without recompilation.
 2. **Non-Blocking Sensor Hot Path:**
    - Protocol listeners must never block on network I/O to the central aggregator. Push all telemetry to a bounded, buffered Go channel (`chan ocsf.ThreatEvent`) with drop-oldest overflow protection so attackers cannot stall or fingerprint sensors.
@@ -89,15 +89,15 @@ A clean-slate, modular, globally distributed Threat & Abuse Intelligence Platfor
    - **Second-Order Infrastructure Attribution:** Extract outbound payload URLs, C2 domains/IPs, and callback targets from captured commands/prompts; resolve and score those hosting ASNs 10x higher than disposable residential scanner IPs.
    - **Benign Researcher Allowlisting:** Verify reverse-DNS/ASN ownership for known benign scanners (Shodan, Censys, Shadowserver, major search crawlers) and exclude them from blocklists and XARF reports.
    - **Aggressive TTL Decay:** Assign short TTLs (6–24h) to compromised residential/VPS scanner IPs and long TTLs (7–30d) to confirmed C2/malware staging infrastructure.
-5. **Zero-Allocation Hot Paths in Aggregator:** Use `gaissmai/bart` prefix tables and memory-mapped `.mmdb` lookups for all IP/ASN enrichment.
+5. **Zero-Allocation Hot Paths in Aggregator:** Use `gaissmai/bart` prefix tables and memory-mapped `.mmdb` lookups for all IP/ASN enrichment (ADR-0011).
 6. **Safe Payload Handling & Legal Guardrails:**
-   - Never execute captured binaries or scripts; hash (`SHA-256`), extract static IOCs, and quarantine safely.
+   - Never execute captured binaries or scripts; hash (`SHA-256`), extract static IOCs, and quarantine safely (ADR-0006).
    - Do not market honeypot endpoints to legitimate human users; expose unadvertised protocol listeners designed strictly to catch automated scanning and exploitation.
    - Only dispatch XARF abuse reports for high-confidence, evidence-backed exploitation/malware drops (never for single-packet port scans).
 
 7. **Observability & Telemetry:**
    - **Metrics:** Prometheus metrics at `:8090/metrics` (sensor) and `:8091/metrics` (aggregator) — trap events, correlation events, risk scores, XARF dispatches, KV/D1 writes, channel saturation
-   - **Tracing:** OpenTelemetry distributed tracing via OTLP HTTP exporter — trace context propagated across sensor→aggregator→edge API
+   - **Tracing:** OpenTelemetry distributed tracing via OTLP HTTP exporter — trace context propagated across sensor→aggregator→edge API (ADR-0017)
    - **Logging:** Structured JSON logging via `log/slog` with fields: module, event_type, src_ip, dst_ip, finding_type, risk_score, canary_id, payload_sha256
    - **Dashboards:** Grafana dashboard at `observability/grafana/dashboards/nullpot-overview.json` — service status, trap events, risk score distribution, XARF reports, KV/D1 writes, channel size
    - **Alerting:** Prometheus alerting rules at `observability/alertmanager/rules.yml` — service down, high event drop rate, high risk scores, XARF dispatch failures, Cloudflare API errors, KV/D1 write failures
