@@ -38,6 +38,13 @@ All notable changes to nullpot are documented in this file.
 - Prevent single-packet scans from self-classifying as high-confidence attackers
 - ADR-010 double-verification logic unchanged (implementation bug fix)
 
+### Phase 3 — aggregator/internal/scoring: Fix IsConfirmedC2 score inflation
+
+- Fix processEvent: IsConfirmedC2 requires high-confidence correlation AND extracted IOC evidence
+- Prevent score inflation from confirmed C2 bonus on recon-only events
+
+### Phase 4 — sensors/internal/traps/http_persona: YAML-driven HTTP/HTTPS trap
+
 - OpenAPI/YAML-driven decoy HTTP trap serving persona routes (ADR-005)
 - Canary token injection, SHA-256 payload hashing, OCSF event emission (ADR-006)
 - Safe payload handling: never execute captured content (ADR-006)

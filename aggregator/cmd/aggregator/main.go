@@ -165,7 +165,7 @@ func processEvent(
 			RiskMultiplier:   corrResult.RiskMultiplier,
 			TTL:              ttlHours,
 		},
-		IsConfirmedC2:    corrResult.IsHighConfidence,
+		IsConfirmedC2:    corrResult.IsHighConfidence && len(ev.Enrichment.ExtractedIOCs) > 0,
 		IsResidentialVPS: false,
 	}
 	riskScore := scorer.Score(inputs)
