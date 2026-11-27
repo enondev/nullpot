@@ -85,7 +85,32 @@ async function handleIPLookup(env: Env, ip: string): Promise<Response> {
     });
   }
 
-  // Cache miss — return not found (aggregator populates KV asynchronously)
+  // KV miss — fall back to D1
+  try {
+    const result = await env.D1.prepare(
+      "SELECT score, ttl, asn, geo, updated_at FROM ip_reputation WHERE ip = ?"
+    ).bind(ip).first();
+
+    if (result) {
+      const rep: IPReputation = {
+        ip,
+        score: result.score as number,
+        ttl: result.ttl as string,
+        asn: result.asn as string,
+        geo: result.geo as string,
+        updated_at: result.updated_at as string,
+      };
+      // Backfill KV for future requests
+      await env.KV.put(key, JSON.stringify(rep));
+      return new Response(JSON.stringify(rep), {
+        status: 200,
+        headers: { "Content-Type": "application/json", "Cache-Control": "public, max-age=300" },
+      });
+    }
+  } catch (e) {
+    console.error("D1 lookup failed for IP:", ip, e);
+  }
+
   return new Response(JSON.stringify({ ip, score: 0, error: "not found" }), {
     status: 404,
     headers: { "Content-Type": "application/json" },
@@ -102,6 +127,31 @@ async function handleASNLookup(env: Env, asn: string): Promise<Response> {
       status: 200,
       headers: { "Content-Type": "application/json", "Cache-Control": "public, max-age=300" },
     });
+  }
+
+  // KV miss — fall back to D1
+  try {
+    const result = await env.D1.prepare(
+      "SELECT score, org, country, updated_at FROM asn_reputation WHERE asn = ?"
+    ).bind(asn).first();
+
+    if (result) {
+      const rep: ASNReputation = {
+        asn,
+        score: result.score as number,
+        org: result.org as string,
+        country: result.country as string,
+        updated_at: result.updated_at as string,
+      };
+      // Backfill KV for future requests
+      await env.KV.put(key, JSON.stringify(rep));
+      return new Response(JSON.stringify(rep), {
+        status: 200,
+        headers: { "Content-Type": "application/json", "Cache-Control": "public, max-age=300" },
+      });
+    }
+  } catch (e) {
+    console.error("D1 lookup failed for ASN:", asn, e);
   }
 
   return new Response(JSON.stringify({ asn, score: 0, error: "not found" }), {
