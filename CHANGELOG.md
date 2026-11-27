@@ -27,6 +27,11 @@ All notable changes to nullpot are documented in this file.
 - All-port TCP/UDP packet listener emitting OCSF port_scan events (ADR-004)
 - SO_ORIGINAL_DST documented for Linux build tags
 
+### Phase 1 — sensors/internal/widenet: SO_ORIGINAL_DST implementation
+
+- Apply SO_ORIGINAL_DST syscall on Linux to recover original destination of redirected traffic
+- Platform-specific build tags: widenet_linux.go (Linux), widenet_other.go (non-Linux error)
+
 ### Phase 4 — sensors/internal/traps/http_persona: YAML-driven HTTP/HTTPS trap
 
 - OpenAPI/YAML-driven decoy HTTP trap serving persona routes (ADR-005)
