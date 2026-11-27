@@ -8,12 +8,12 @@ enabled = true
 
 [[kv_namespaces]]
 binding = "KV"
-id = "" # set via wrangler secret or environment variable
+id = "60d614ed21d74a2ab64fa5c3ac5cb2ad" # NULLPOT_KV
 
 [[d1_databases]]
 binding = "D1"
-database_name = "nullpot-edge-db"
-database_id = "" # set via wrangler secret or environment variable
+database_name = "nullpot"
+database_id = "335b2ca8-011c-44e9-85e1-3d04df8de4ca"
 
 [ai]
 binding = "AI"
