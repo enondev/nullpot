@@ -4,27 +4,27 @@
   command = "echo 'static site, no build step'"
 
 [[redirects]]
-  source = "/admin"
-  dest = "/404.html"
+  from = "/admin"
+  to = "/404.html"
   status = 404
 
 [[redirects]]
-  source = "/.env"
-  dest = "/404.html"
+  from = "/.env"
+  to = "/404.html"
   status = 404
 
 [[redirects]]
-  source = "/phpmyadmin"
-  dest = "/404.html"
+  from = "/phpmyadmin"
+  to = "/404.html"
   status = 404
 
 [[redirects]]
-  source = "/server-status"
-  dest = "/404.html"
+  from = "/server-status"
+  to = "/404.html"
   status = 404
 
 [[headers]]
-  source = "/**"
+  for = "/**"
   [headers.values]
     X-Content-Type-Options = "nosniff"
     X-Frame-Options = "DENY"

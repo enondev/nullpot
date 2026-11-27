@@ -6,6 +6,11 @@ on:
   pull_request:
     branches: [master]
 
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
 jobs:
   test:
     runs-on: ubuntu-latest
@@ -45,10 +50,10 @@ jobs:
         working-directory: edge-api
         run: npm run typecheck
 
-  deploy-pages:
+  deploy:
     needs: test
     runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/main'
+    if: github.ref == 'refs/heads/master'
     steps:
       - uses: actions/checkout@v4
 
@@ -61,14 +66,13 @@ jobs:
         run: |
           find decoys/ai-compute -name '*.html' -exec sed -i "s/{{CF_WEB_ANALYTICS_TOKEN}}/${{ secrets.CF_WEB_ANALYTICS_TOKEN }}/g" {} +
 
-      - name: Deploy decoy site to Cloudflare Pages
-        uses: cloudflare/pages-action@v1
+      - name: Upload decoy site artifact for GitHub Pages
+        uses: actions/upload-pages-artifact@v3
         with:
-          directory: decoys/ai-compute
-          gitHubToken: ${{ secrets.GITHUB_TOKEN }}
-          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-          projectName: nullpot-decoy
+          path: decoys/ai-compute
+
+      - name: Deploy decoy site to GitHub Pages
+        uses: actions/deploy-pages@v4
 
       - name: Deploy edge-api Worker to Cloudflare
         working-directory: edge-api
