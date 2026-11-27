@@ -116,7 +116,7 @@ async function handleEDL(env: Env, feed: string): Promise<Response> {
   const cached = await env.KV.get(key, "text");
 
   if (cached) {
-    return new Response(cached, {
+    return new Response(cached as string, {
       status: 200,
       headers: { "Content-Type": "text/plain", "Cache-Control": "public, max-age=60" },
     });
@@ -132,7 +132,7 @@ async function handleSTIXBundle(env: Env): Promise<Response> {
   const cached = await env.KV.get(STIX_BUNDLE_KEY, "json");
 
   if (cached) {
-    return new Response(cached, {
+    return new Response(cached as string, {
       status: 200,
       headers: {
         "Content-Type": "application/stix+json;version=2.1",
@@ -154,7 +154,7 @@ async function handleMISPManifest(env: Env): Promise<Response> {
   const cached = await env.KV.get(MISP_MANIFEST_KEY, "json");
 
   if (cached) {
-    return new Response(cached, {
+    return new Response(cached as string, {
       status: 200,
       headers: { "Content-Type": "application/json", "Cache-Control": "public, max-age=300" },
     });
