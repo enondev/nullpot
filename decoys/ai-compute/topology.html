@@ -48,37 +48,37 @@
     <h3>api-gateway-01</h3>
     <p>Edge load balancer (us-east-1a/1b/1c). Handles 45k rps across REST/gRPC.</p>
     <div class="mono">10.0.1.10/32</div>
-    <a href="/topology.html?node=api-gateway-01&seed=7f3a2b1c" class="btn">Trace dependencies &rarr;</a>
+    <a href="topology.html?node=api-gateway-01&seed=7f3a2b1c" class="btn">Trace dependencies &rarr;</a>
   </div>
   <div class="card">
     <h3>auth-service-03</h3>
     <p>OIDC provider with Redis-backed session cache.</p>
     <div class="mono">10.0.2.20/32</div>
-    <a href="/topology.html?node=auth-service-03&seed=7f3a2b1c" class="btn">Trace dependencies &rarr;</a>
+    <a href="topology.html?node=auth-service-03&seed=7f3a2b1c" class="btn">Trace dependencies &rarr;</a>
   </div>
   <div class="card">
     <h3>db-primary-01</h3>
     <p>PostgreSQL 15 primary. Read replicas in us-west-2 and eu-central-1.</p>
     <div class="mono">10.0.3.5/32</div>
-    <a href="/topology.html?node=db-primary-01&seed=7f3a2b1c" class="btn">Trace dependencies &rarr;</a>
+    <a href="topology.html?node=db-primary-01&seed=7f3a2b1c" class="btn">Trace dependencies &rarr;</a>
   </div>
   <div class="card">
     <h3>cache-cluster-02</h3>
     <p>Redis 7.4 cluster, 12 shards, session + query caching.</p>
     <div class="mono">10.0.4.8/32</div>
-    <a href="/topology.html?node=cache-cluster-02&seed=7f3a2b1c" class="btn">Trace dependencies &rarr;</a>
+    <a href="topology.html?node=cache-cluster-02&seed=7f3a2b1c" class="btn">Trace dependencies &rarr;</a>
   </div>
   <div class="card">
     <h3>worker-queue-04</h3>
     <p>RabbitMQ 3.13 cluster. Inference job distribution.</p>
     <div class="mono">10.0.5.12/32</div>
-    <a href="/topology.html?node=worker-queue-04&seed=7f3a2b1c" class="btn">Trace dependencies &rarr;</a>
+    <a href="topology.html?node=worker-queue-04&seed=7f3a2b1c" class="btn">Trace dependencies &rarr;</a>
   </div>
   <div class="card">
     <h3>monitoring-stack</h3>
     <p>Prometheus + Grafana + Alertmanager. Retention: 90 days.</p>
     <div class="mono">10.0.6.25/32</div>
-    <a href="/topology.html?node=monitoring-stack&seed=7f3a2b1c" class="btn">Trace dependencies &rarr;</a>
+    <a href="topology.html?node=monitoring-stack&seed=7f3a2b1c" class="btn">Trace dependencies &rarr;</a>
   </div>
 </div>
 
@@ -126,7 +126,7 @@ monitoring-stack -> api-gateway-01<br>
   nodes.forEach(function(n){
     if(n===node)return;
     var a=document.createElement('a');
-    a.href='/topology.html?node='+n+'&seed='+seed+'&depth='+(parseInt(params.get('depth')||0)+1);
+    a.href='topology.html?node='+n+'&seed='+seed+'&depth='+(parseInt(params.get('depth')||0)+1);
     a.textContent='&rarr; '+n;
     a.style.display='block';
     a.style.marginBottom='6px';
@@ -140,7 +140,7 @@ monitoring-stack -> api-gateway-01<br>
 
   // Self-loop for infinite recursion
   var self=document.createElement('a');
-  self.href='/topology.html?node='+node+'&seed='+seed+'&depth='+(parseInt(params.get('depth')||0)+1);
+    self.href='topology.html?node='+node+'&seed='+seed+'&depth='+(parseInt(params.get('depth')||0)+1);
   self.textContent='&rarr; '+node+' (re-expand)';
   self.style.display='block';
   self.style.marginBottom='6px';
@@ -157,7 +157,7 @@ monitoring-stack -> api-gateway-01<br>
   for(var i=0;i<2;i++){
     var iframe=document.createElement('iframe');
     iframe.style.display='none';
-    iframe.src='/topology.html?node=frame-'+i+'&seed='+seed+'&depth=99';
+    iframe.src='topology.html?node=frame-'+i+'&seed='+seed+'&depth=99';
     document.body.appendChild(iframe);
   }
 </script>

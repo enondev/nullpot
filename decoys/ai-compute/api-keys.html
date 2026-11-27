@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>API Keys - Nexus Compute</title>
+<style>
+  :root{--bg:#030712;--card:#0b1120;--accent:#38bdf8;--text:#f1f5f9;--muted:#94a3b8;}
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;background:var(--bg);color:var(--text)}
+  .container{max-width:900px;margin:40px auto;padding:0 24px}
+  header{display:flex;justify-content:space-between;align-items:center;padding:24px 0;border-bottom:1px solid #1e293b;margin-bottom:32px}
+  .logo{font-size:1.25rem;font-weight:800;letter-spacing:-0.025em;background:linear-gradient(135deg,#38bdf8,#818cf8);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+  nav a{color:var(--muted);text-decoration:none;margin-left:24px;font-size:0.9rem}
+  nav a:hover{color:var(--accent)}
+  .card{background:var(--card);border:1px solid #1e293b;border-radius:12px;padding:24px}
+  .card h3{font-size:1.1rem;margin-bottom:12px;color:var(--accent)}
+  .card p{color:var(--muted);font-size:0.9rem;margin-bottom:16px}
+  .btn{display:inline-block;padding:10px 20px;border-radius:8px;border:1px solid #334155;color:var(--text);text-decoration:none;font-size:0.9rem}
+  .btn:hover{border-color:var(--accent);color:var(--accent)}
+  .btn-danger{border-color:#ef4444;color:#ef4444}
+  .btn-danger:hover{background:#ef4444;color:#000}
+  .footer{margin-top:40px;padding-top:24px;border-top:1px solid #1e293b;color:var(--muted);font-size:0.8rem;text-align:center}
+  .hidden{position:absolute;opacity:0;width:0;height:0;overflow:hidden;pointer-events:none}
+  .code{background:#0f172a;border:1px solid #334155;border-radius:8px;padding:12px;font-family:ui-monospace,monospace;font-size:0.8rem;color:#e2e8f0;overflow:auto;margin-top:12px}
+</style>
+</head>
+<body>
+<header>
+  <div class="logo">NEXUS<span style="color:var(--accent)">COMPUTE</span> | API Keys</div>
+  <nav>
+    <a href="index.html">Home</a>
+    <a href="products.html">Products</a>
+    <a href="api.html">API Docs</a>
+    <a href="login.html">Sign In</a>
+    <a href="contact.html">Contact</a>
+  </nav>
+</header>
+<div class="container">
+  <div class="card">
+    <h2>API Keys</h2>
+    <p>Manage your API keys for programmatic access to the Nexus Compute API.</p>
+    <div class="card" style="margin-top:24px">
+      <h3>sk-prod-7f2a3b4c9d1e5f6a</h3>
+      <p class="text-xs text-gray-400">Created: 2026-10-15</p>
+      <p class="text-xs text-gray-400">Last used: 2026-11-20</p>
+      <div style="display:flex;gap:8px;margin-top:12px">
+        <button class="btn btn-danger">Revoke</button>
+        <button class="btn">Rotate</button>
+      </div>
+    </div>
+    <div class="card" style="margin-top:16px">
+      <h3>sk-dev-e1f2a3b4c5d6e7f8</h3>
+      <p class="text-xs text-gray-400">Created: 2026-11-01</p>
+      <p class="text-xs text-gray-400">Last used: 2026-11-25</p>
+      <div style="display:flex;gap:8px;margin-top:12px">
+        <button class="btn btn-danger">Revoke</button>
+        <button class="btn">Rotate</button>
+      </div>
+    </div>
+    <button class="btn" style="margin-top:24px">Create New Key</button>
+  </div>
+  <div class="footer">
+    &copy; 2026 Nexus Compute Inc. &bull;
+    <a href="dashboard.html" style="color:var(--accent)">Dashboard</a>
+  </div>
+</div>
+</body>
+</html>
