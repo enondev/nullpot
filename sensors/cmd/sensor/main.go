@@ -6,6 +6,7 @@ import (
 	"flag"
 	"fmt"
 	"log"
+	"net"
 	"net/http"
 	"os"
 	"os/signal"
@@ -30,6 +31,7 @@ func main() {
 	personasDir := flag.String("personas", "sensors/personas", "Persona specs directory")
 	sshListen := flag.String("ssh", ":2222", "SSH tarpit listen address")
 	rawTCPListen := flag.String("raw-tcp", ":6379", "Raw TCP trap listen address")
+	widenetListen := flag.String("widenet-listen", "0.0.0.0:53", "Widenet listener listen address")
 	metricsAddr := flag.String("metrics", ":8090", "Metrics endpoint listen address")
 	productName := flag.String("product", "EdgeTrapSensor", "Sensor product name")
 	productUID := flag.String("uid", "edge-local-01", "Sensor product uid")
@@ -39,6 +41,13 @@ func main() {
 	// Normalize PORT for Render (sets bare number like "10000"; Go needs ":10000")
 	if _, err := strconv.Atoi(*listenAddr); err == nil {
 		*listenAddr = ":" + *listenAddr
+	}
+
+	// Validate widenet listen port is not 0.
+	if _, portStr, err := net.SplitHostPort(*widenetListen); err == nil {
+		if port, err := strconv.Atoi(portStr); err == nil && port == 0 {
+			log.Fatalf("widenet: listen port must not be 0: %s", *widenetListen)
+		}
 	}
 
 	ctx, stop := signal.NotifyContext(context.Background(), syscall.SIGINT, syscall.SIGTERM)
@@ -59,7 +68,7 @@ func main() {
 	modules := []core.TrapModule{}
 
 	// Widenet listener.
-	w, err := widenet.NewListener("udp", "0.0.0.0:0", events)
+	w, err := widenet.NewListener("udp", *widenetListen, events)
 	if err != nil {
 		log.Fatalf("widenet: %v", err)
 	}
