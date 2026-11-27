@@ -80,17 +80,17 @@
       <button class="btn btn-oauth" style="background:#00a4ef;color:#fff" data-provider="microsoft" data-trap="1">Microsoft</button>
     </div>
     <div class="footer">
-      Already have an account? <a href="/login.html" style="color:var(--accent)">Sign in</a> &bull;
-      <a href="/contact.html" style="color:var(--accent)">Contact</a>
+      Already have an account? <a href="login.html" style="color:var(--accent)">Sign in</a> &bull;
+      <a href="contact.html" style="color:var(--accent)">Contact</a>
     </div>
   </div>
 </div>
 
 <div class="hidden">
-  <input type="text" value="Stripe account sk_test_NULLPOT_SIGNUP_HIDDEN_01">
-  <input type="text" value="SendGrid API SG_NULLPOT_SIGNUP_HIDDEN_02_xyz">
+  <input type="text" value="Stripe account nullpot_test_key_14">
+  <input type="text" value="SendGrid API SG.L9m2n4p6q8t0v2x4z6a8c0e2g4i6k0m2">
   <textarea>-----BEGIN EC PRIVATE KEY-----
-NULLPOT_SIGNUP_HIDDEN_03_DO_NOT_COMMIT
+SIGNUP_HIDDEN_03_DO_NOT_COMMIT
 -----END EC PRIVATE KEY-----</textarea>
 </div>
 
@@ -109,7 +109,7 @@ NULLPOT_SIGNUP_HIDDEN_03_DO_NOT_COMMIT
     btn.innerText='Creating account...';
     setTimeout(function(){
       btn.innerText='Account created. Redirecting...';
-      setTimeout(function(){window.location.href='/dashboard.html?t=signup_welcome_01';},1000);
+      setTimeout(function(){window.location.href='dashboard.html?t=signup_welcome_01';},1000);
     },1200);
   });
 
@@ -124,7 +124,7 @@ NULLPOT_SIGNUP_HIDDEN_03_DO_NOT_COMMIT
       btn.innerText='Redirecting to '+provider+'...';
       setTimeout(function(){
         if(trap){
-          window.location.href='/topology.html?node=oauth-'+provider+'&seed=oauth&depth=0';
+          window.location.href='topology.html?node=oauth-'+provider+'&seed=oauth&depth=0';
         }else{
           __nexus.beacon('oauth_'+provider,'oauth_silent_post',{provider:provider});
           btn.disabled=false;

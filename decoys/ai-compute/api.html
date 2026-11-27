@@ -46,9 +46,9 @@
   <header>
     <div class="logo">NEXUS<span style="color:var(--accent)">COMPUTE</span> API</div>
     <nav>
-      <a href="/">Home</a>
+      <a href=".">Home</a>
       <a href="/dashboard.html?t=api_dash_01">Dashboard</a>
-      <a href="/contact.html">Contact</a>
+      <a href="contact.html">Contact</a>
       <a href="/login.html?t=api_login_01">Sign In</a>
     </nav>
   </header>
@@ -81,24 +81,24 @@
       <div class="note">
         <strong>Example request:</strong>
         <div class="code">curl https://api.nexuscompute.cloud/v1/clusters \\
-  -H "Authorization: Bearer sk-live_NULLPOT_API_AUTH_01" \\
+  -H "Authorization: Bearer nullpot_test_key_01" \\
   -H "Content-Type: application/json"</div>
       </div>
 
       <h3>API Keys</h3>
       <p>Create, rotate, and revoke API keys. Keys are scoped to your organization.</p>
-      <div class="code">sk-live_NULLPOT_API_KEY_LIVE_01
-sk-test_NULLPOT_API_KEY_TEST_02
-sk-dev_NULLPOT_API_KEY_DEV_03</div>
+      <div class="code">nullpot_test_key_02
+nullpot_test_key_03
+nullpot_test_key_15</div>
 
       <h3>Webhook Endpoints</h3>
       <p>Receive cluster events via webhook. Register your callback URL in the dashboard.</p>
       <div class="code">POST https://api.nexuscompute.cloud/v1/webhooks
-Body: {"url": "https://NULLPOT_API_WEBHOOK_01.yourdomain.com/nexus", "events": ["cluster.ready", "cluster.error"]}</div>
+Body: {"url": "https://api-webhook-7e9c2b4d6f8a0c1e3g5i7k9m0o.yourdomain.com/nexus", "events": ["cluster.ready", "cluster.error"]}</div>
 
       <h3>SDK Installation</h3>
       <div class="code">pip install nexus-compute
-export NEXUS_API_KEY=sk-live_NULLPOT_API_SDK_01</div>
+export NEXUS_API_KEY=nullpot_test_key_04</div>
 
       <h3>Support</h3>
       <p>Contact platform engineering at <a href="mailto:platform@nexuscompute.cloud" style="color:var(--accent)">platform@nexuscompute.cloud</a> or file a ticket in our internal Jira: <a href="https://jira.nexuscompute.internal/browse/NEXUS-4096?t=api_jira_01" style="color:var(--accent)">jira.nexuscompute.internal</a></p>
@@ -113,9 +113,9 @@ export NEXUS_API_KEY=sk-live_NULLPOT_API_SDK_01</div>
 
 <div class="hidden">
   <input type="text" value="Internal base URL https://staging-api.internal/v1">
-  <input type="text" value="Legacy bearer token eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.NULLPOT_API_HIDDEN_02.signature">
+  <input type="text" value="Legacy bearer token eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.HIDDEN_02_SECRET.signature">
   <textarea>-----BEGIN CERTIFICATE REQUEST-----
-NULLPOT_API_HIDDEN_03_DO_NOT_SHARE
+API_HIDDEN_03_DO_NOT_SHARE
 -----END CERTIFICATE REQUEST-----</textarea>
 </div>
 

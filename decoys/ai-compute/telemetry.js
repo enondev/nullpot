@@ -43,7 +43,7 @@
       var ctx=c.getContext('2d');
       ctx.textBaseline='top';
       ctx.font='14px Arial';
-      ctx.fillText('nullpot_fp_'+_sid,10,10);
+      ctx.fillText('fp_telemetry_'+_sid,10,10);
       fp.canvas=c.toDataURL();
     }catch(e){fp.canvas='err';}
     // WebGL renderer/vendor - headless/VM environments differ
