@@ -49,9 +49,10 @@ A clean-slate, modular, globally distributed Threat & Abuse Intelligence Platfor
 │       ├── correlate/       # Double-verification engine, C2/URL extractor, & researcher allowlist
 │       ├── scoring/         # In-memory bart radix tree + MaxMind GeoIP/ASN risk scorer
 │       ├── abuse/           # Automated XARF report dispatcher for confirmed compromised hosts
-│       └── cloudflare/      # Batched KV snapshot uploader (API, EDLs, STIX, MISP) & D1 event writer
+│       ├── cloudflare/      # Batched KV snapshot uploader (API, EDLs, STIX, MISP) & D1 event writer
+│       └── obs/             # OpenTelemetry tracing, Prometheus metrics, structured logging
 ├── decoys/
-│   └── ai-compute/         # Static decoy site (landing, login, signup, dashboard, API, pricing, products, topology, console, contact, 404)
+│   └── ai-compute/         # Static decoy site (landing, login, signup, dashboard, API, pricing, products, topology, console, contact)
 │       ├── telemetry.js    # Obfuscated telemetry collector (clicks, mouse, scroll, keyboard, visibility, canvas/WebGL/audio/font fingerprints)
 │       ├── canary tokens   # Session-bound fake credentials/URLs in decoy responses
 │       └── netlify.toml, vercel.json, _headers, _redirects  # Static host configs
@@ -63,6 +64,12 @@ A clean-slate, modular, globally distributed Threat & Abuse Intelligence Platfor
 │   │   ├── routes/         # GET /v1/ip/:ip, GET /v1/asn/:asn, GET /v1/edl/:feed.txt, GET /v1/stix/bundle.json, GET /v1/misp/manifest.json
 │   │   └── ai/             # Scheduled Workers AI threat-campaign summarizer (score >= 75 only)
 │   └── migrations/         # Cloudflare D1 SQLite schema
+├── observability/
+│   ├── prometheus/         # Prometheus scrape configuration
+│   ├── grafana/            # Grafana dashboards
+│   │   └── dashboards/nullpot-overview.json
+│   └── alertmanager/       # Prometheus alerting rules & Alertmanager config
+│       └── rules.yml
 ├── .github/workflows/      # CI/CD (gofmt, go vet, go test, golangci-lint, TS typecheck, Pages + wrangler deploy)
 ├── DEPLOY.md               # Full deployment guide
 └── CHANGELOG.md            # Per-phase changelog
@@ -88,18 +95,13 @@ A clean-slate, modular, globally distributed Threat & Abuse Intelligence Platfor
    - Do not market honeypot endpoints to legitimate human users; expose unadvertised protocol listeners designed strictly to catch automated scanning and exploitation.
    - Only dispatch XARF abuse reports for high-confidence, evidence-backed exploitation/malware drops (never for single-packet port scans).
 
-7. **Static Decoy Site (`decoys/ai-compute/`):**
-   - YAML-driven HTTP/HTTPS decoy personas (landing, login, signup, dashboard, API, pricing, products, topology, console, contact)
-   - telemetry.js: obfuscated aggregator callback URL (base64 + concatenation), prefixed token IDs
-   - Fingerprinting: canvas, WebGL renderer/vendor, AudioContext, fonts, connection (effectiveType/downlink/rtt), deviceMemory
-   - Interaction tracking: all clicks (tag/href/text), sampled mouse movement (x/y), max scroll depth, sampled keyboard count, visibility/tab changes
-   - Batched beaconing: navigator.sendBeacon, 10 events or 3s flush, to POST /v1/telemetry/callback
-   - Chaotic jitter (random micro-movements), randomly-disabled buttons to disrupt automated clicking
-   - Recursive topology pages (topology.html) and iframe recursion trap automated crawlers
-   - Fake OAuth buttons: some redirect to topology trap (infinite recursion), others silently POST then show "temporarily unavailable" error
-   - Fake login/signup forms capture credentials and POST to aggregator before simulating error/success
-   - D1-backed contact form submits to external Workers endpoint
-   - Honeypot links (/admin, /.env, /phpmyadmin, etc.) disallowed in robots.txt but present in page source
+7. **Observability & Telemetry:**
+   - **Metrics:** Prometheus metrics at `:8090/metrics` (sensor) and `:8091/metrics` (aggregator) — trap events, correlation events, risk scores, XARF dispatches, KV/D1 writes, channel saturation
+   - **Tracing:** OpenTelemetry distributed tracing via OTLP HTTP exporter — trace context propagated across sensor→aggregator→edge API
+   - **Logging:** Structured JSON logging via `log/slog` with fields: module, event_type, src_ip, dst_ip, finding_type, risk_score, canary_id, payload_sha256
+   - **Dashboards:** Grafana dashboard at `observability/grafana/dashboards/nullpot-overview.json` — service status, trap events, risk score distribution, XARF reports, KV/D1 writes, channel size
+   - **Alerting:** Prometheus alerting rules at `observability/alertmanager/rules.yml` — service down, high event drop rate, high risk scores, XARF dispatch failures, Cloudflare API errors, KV/D1 write failures
+   - **Alertmanager:** `observability/alertmanager/alertmanager.yml` — Slack/email notification routing by severity (critical/warning)
 
 8. **CI/CD (`.github/workflows/ci.yml`):**
    - Go: gofmt, go vet, go test, golangci-lint on push/PR to main

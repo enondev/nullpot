@@ -18,6 +18,7 @@ import (
 	"github.com/enondev/nullpot/aggregator/internal/cloudflare"
 	"github.com/enondev/nullpot/aggregator/internal/correlate"
 	"github.com/enondev/nullpot/aggregator/internal/ingest"
+	"github.com/enondev/nullpot/aggregator/internal/obs"
 	"github.com/enondev/nullpot/aggregator/internal/scoring"
 	"github.com/enondev/nullpot/specs"
 )
@@ -28,7 +29,7 @@ func main() {
 	cfAPIToken := flag.String("cf-token", getEnv("CF_API_TOKEN", ""), "Cloudflare API token")
 	cfKVNamespace := flag.String("cf-kv-ns", getEnv("CF_KV_NAMESPACE", ""), "Cloudflare KV namespace ID")
 	cfD1Database := flag.String("cf-d1-db", getEnv("CF_D1_DATABASE", ""), "Cloudflare D1 database ID")
-	flag.Parse()
+	metricsAddr := flag.String("metrics", ":8091", "Metrics endpoint listen address")
 
 	// Normalize PORT for Render (sets bare number like "10000"; Go needs ":10000")
 	if _, err := strconv.Atoi(*listenAddr); err == nil {
@@ -43,6 +44,9 @@ func main() {
 
 	// In-memory event store
 	eventStore := ingest.NewEventStore()
+
+	// Initialize observability.
+	metrics := obs.NewMetrics()
 
 	// Ingest receiver
 	recv := ingest.NewReceiver(events, eventStore, specs.Product{
@@ -92,12 +96,14 @@ func main() {
 		}
 	}()
 
-	// Health endpoint
-	healthSrv := &http.Server{Addr: ":8091"}
-	http.HandleFunc("/healthz", func(w http.ResponseWriter, r *http.Request) {
+	// Health and metrics endpoint.
+	mux := http.NewServeMux()
+	mux.HandleFunc("/healthz", func(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusOK)
 		fmt.Fprintf(w, "ok\n")
 	})
+	mux.Handle("/metrics", metrics.Handler())
+	healthSrv := &http.Server{Addr: *metricsAddr, Handler: mux}
 	go func() {
 		_ = healthSrv.ListenAndServe()
 	}()
