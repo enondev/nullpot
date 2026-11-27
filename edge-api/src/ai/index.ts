@@ -31,7 +31,7 @@ export default {
       return; // No high-severity events to summarize
     }
 
-    const payload = JSON.parse(pending) as CampaignSummaryRequest;
+    const payload = JSON.parse(pending as string) as CampaignSummaryRequest;
 
     // Guard: only invoke Workers AI on confirmed high-severity multi-stage
     // attacks or novel exploit payloads
